@@ -1,0 +1,96 @@
+<div class="flex h-screen bg-surface overflow-hidden">
+  <!-- ─── Sidebar ─────────────────────────────────── -->
+  <aside
+    class="fixed left-0 top-0 h-full bg-white flex flex-col py-8 z-50 transition-all duration-300"
+    [class]="sidebarOpen() ? 'w-56' : 'w-0 overflow-hidden md:w-18'"
+    style="border-right: none; box-shadow: 4px 0 24px rgba(15, 23, 42, 0.05)"
+  >
+    <!-- Logo -->
+    <div class="px-6 mb-10 flex items-center gap-3 overflow-hidden whitespace-nowrap">
+      <div class="w-12 h-12 rounded-lg flex items-center justify-center shrink-0">
+        <img src="/logo/hw_logo_nobg.png" alt="HWstore" />
+      </div>
+      @if (sidebarOpen()) {
+        <div>
+          <h1 class="text-xl font-black tracking-tighter text-primary leading-none">HWstore</h1>
+          <p class="text-[10px] text-secondary/60 uppercase tracking-widest font-semibold">
+            Admin Portal
+          </p>
+        </div>
+      }
+
+      <button
+        (click)="sidebarOpen.set(!sidebarOpen())"
+        class="ml-auto rounded-lg text-secondary hover:text-primary hover:bg-surface-container-low transition-colors"
+      >
+        <span class="material-symbols-outlined">{{ sidebarOpen() ? 'menu_open' : 'menu' }}</span>
+      </button>
+    </div>
+
+    <!-- Nav Links -->
+    <nav class="flex-1 space-y-1 px-3">
+      @for (item of navItems; track item.path) {
+        <a
+          [routerLink]="['/admin', item.path]"
+          routerLinkActive="admin-nav-active"
+          [routerLinkActiveOptions]="{ exact: item.path === '' }"
+          class="flex items-center gap-3 px-3 py-3 rounded-lg text-slate-500 hover:text-primary hover:bg-surface-container-low transition-all duration-200 overflow-hidden whitespace-nowrap group"
+        >
+          <span class="material-symbols-outlined text-xl flex-shrink-0">{{ item.icon }}</span>
+          @if (sidebarOpen()) {
+            <span class="text-sm font-medium">{{ item.label }}</span>
+          }
+        </a>
+      }
+    </nav>
+
+    <!-- User & Logout -->
+    <div class="px-3 pt-6 border-t border-surface-container-low">
+      @if (authService.currentUser(); as user) {
+        <div class="flex items-center gap-3 px-3 py-3 overflow-hidden whitespace-nowrap">
+          <div
+            class="w-8 h-8 rounded-lg bg-gradient-to-br from-secondary to-secondary/70 flex items-center justify-center text-white font-bold text-xs flex-shrink-0"
+          >
+            {{ user.name.charAt(0) }}
+          </div>
+          @if (sidebarOpen()) {
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-bold text-on-surface truncate">{{ user.name }}</p>
+              <p class="text-[10px] text-secondary truncate">{{ user.role }}</p>
+            </div>
+          }
+        </div>
+      }
+      <button
+        (click)="authService.logout()"
+        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-secondary hover:text-error hover:bg-error-container/30 transition-all duration-200 mt-1 overflow-hidden whitespace-nowrap"
+      >
+        <span class="material-symbols-outlined text-xl flex-shrink-0">logout</span>
+        @if (sidebarOpen()) {
+          <span class="text-sm font-medium">Déconnexion</span>
+        }
+      </button>
+    </div>
+  </aside>
+
+  <!-- ─── Main content ─────────────────────────────── -->
+  <div
+    class="flex-1 flex flex-col overflow-hidden transition-all duration-300"
+    [style.margin-left]="sidebarOpen() ? '256px' : '64px'"
+  >
+    <!-- Top Bar -->
+
+    <!-- Page content -->
+    <main class="flex-1 overflow-y-auto admin-scrollbar bg-surface">
+      <router-outlet />
+    </main>
+  </div>
+</div>
+
+<!-- Toast overlay -->
+<admin-toast />
+
+<!-- Decorative pulse -->
+<div class="fixed bottom-8 right-8 pointer-events-none opacity-40">
+  <div class="w-24 h-24 bg-primary/10 rounded-full blur-2xl"></div>
+</div>

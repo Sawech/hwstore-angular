@@ -1,0 +1,185 @@
+<!-- HWstore — Mes Commandes -->
+<main class="pt-32 pb-24 px-4 sm:px-8 max-w-7xl mx-auto min-h-screen flex flex-col gap-12">
+  <!-- ── Page Header ──────────────────────────────────────────────── -->
+  <header
+    class="flex flex-col md:flex-row md:items-end justify-between gap-6 pl-4 border-l-4 border-primary"
+  >
+    <div>
+      <h1
+        class="text-[3.5rem] leading-none font-display font-black tracking-tight text-on-background mb-4"
+      >
+        Mes Commandes
+      </h1>
+      <p class="text-lg font-body text-secondary max-w-2xl leading-relaxed">
+        Consultez l'historique de vos commandes.
+      </p>
+    </div>
+    <!-- Filter chips (visual only) -->
+    <div class="flex gap-2 bg-surface-container-low p-1 rounded-lg">
+      <button
+        class="px-6 py-2 rounded text-sm font-label font-bold uppercase tracking-wider bg-surface-container-lowest text-primary shadow-[0_4px_12px_rgba(15,23,42,0.05)] transition-all"
+      >
+        Toutes
+      </button>
+      <button
+        class="px-6 py-2 rounded text-sm font-label font-bold uppercase tracking-wider text-secondary hover:text-primary transition-all"
+      >
+        En cours
+      </button>
+      <button
+        class="px-6 py-2 rounded text-sm font-label font-bold uppercase tracking-wider text-secondary hover:text-primary transition-all"
+      >
+        Terminées
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Loading Spinner ─────────────────────────────────────────── -->
+  @if (loading()) {
+    <div class="flex justify-center items-center py-24">
+      <div
+        class="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"
+      ></div>
+    </div>
+  }
+
+  <!-- ── Error State ─────────────────────────────────────────────── -->
+  @if (error()) {
+    <div class="bg-error-container text-on-error-container rounded-xl p-6 flex items-center gap-3">
+      <span class="material-symbols-outlined">error</span>
+      <p class="font-body font-medium">{{ error() }}</p>
+    </div>
+  }
+
+  <!-- ── Empty State ─────────────────────────────────────────────── -->
+  @if (!loading() && !error() && carts().length === 0) {
+    <div class="flex flex-col items-center justify-center py-24 gap-6 text-center">
+      <span class="material-symbols-outlined text-7xl text-secondary/30" style="font-size: 5rem"
+        >shopping_bag</span
+      >
+      <div>
+        <h2 class="text-2xl font-headline font-bold text-on-background mb-2">Aucune commande</h2>
+        <p class="text-secondary font-body">Vous n'avez pas encore passé de commande.</p>
+      </div>
+      <a
+        routerLink="/categories"
+        class="px-8 py-3 rounded-lg bg-gradient-to-br from-primary to-primary-container text-white font-bold text-sm tracking-wide hover:opacity-90 transition-opacity shadow-[0_8px_16px_rgba(168,43,85,0.2)]"
+      >
+        Découvrir nos produits
+      </a>
+    </div>
+  }
+
+  <!-- ── Orders List ─────────────────────────────────────────────── -->
+  @if (!loading() && !error() && carts().length > 0) {
+    <div class="flex flex-col gap-6">
+      @for (cart of carts(); track cart.id) {
+        <article
+          class="bg-surface-container-lowest rounded-xl p-8 relative overflow-hidden group shadow-[0_20px_40px_rgba(15,23,42,0.02)] hover:shadow-[0_20px_40px_rgba(15,23,42,0.06)] transition-shadow duration-300 border border-outline-variant/20"
+        >
+          <!-- Status accent stripe -->
+          <div class="absolute top-0 left-0 w-1 h-full bg-tertiary-container"></div>
+
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-start gap-6">
+            <!-- Left: ref + status + items -->
+            <div class="flex flex-col gap-3 flex-1">
+              <!-- Reference row -->
+              <div class="flex items-center gap-3 flex-wrap">
+                <span class="text-xs font-label uppercase tracking-widest text-secondary"
+                  >Commande</span
+                >
+                <span class="font-headline font-bold text-xl text-on-background"
+                  >#{{ cart.orderRef }}</span
+                >
+                <span
+                  class="bg-tertiary-container/20 text-tertiary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5"
+                >
+                  <span class="material-symbols-outlined" style="font-size: 14px"
+                    >check_circle</span
+                  >
+                  {{ getStatusLabel(cart.status) }}
+                </span>
+              </div>
+
+              <!-- Date + article count -->
+              <p class="text-sm text-secondary font-body">
+                Passée le {{ formatDate(cart.createdAt) }}
+                &bull;
+                {{ cart.items.length }} article{{ cart.items.length > 1 ? 's' : '' }}
+                <!-- @if (cart.items.length > 0) {
+                  <span> ({{ getItemNames(cart) }})</span>
+                } -->
+              </p>
+
+              <!-- Item lines -->
+              <div class="mt-1 flex flex-col gap-1.5">
+                @for (item of cart.items; track item.id) {
+                  <div class="flex items-center gap-2 text-xs text-on-surface-variant">
+                    <span class="material-symbols-outlined" style="font-size: 14px"
+                      >chevron_right</span
+                    >
+                    <span class="font-medium">{{ item.product?.name ?? 'Produit' }}</span>
+                    <span class="text-outline">× {{ item.quantity }}</span>
+                    <span class="ml-auto font-bold text-on-background">
+                      {{ formatPrice(item.unitPrice * item.quantity) }}
+                    </span>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Right: total + actions -->
+            <div class="flex items-center gap-6 md:gap-8 self-start md:self-center">
+              <div class="text-right hidden sm:block">
+                <p class="text-xs font-label uppercase tracking-widest text-secondary mb-1">
+                  Montant Total
+                </p>
+                <p class="font-display font-black text-2xl text-on-background">
+                  {{ formatPrice(getTotal(cart)) }}
+                </p>
+              </div>
+              <div class="flex gap-3">
+                <button
+                  class="flex items-center justify-center w-12 h-12 rounded-lg bg-surface-container-low text-secondary hover:text-primary hover:bg-surface-variant transition-colors group-hover:scale-105 duration-300"
+                  title="Reçu"
+                  (click)="showBill(cart.sessionToken)"
+                >
+                  <span class="material-symbols-outlined">receipt_long</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+
+    <!-- ── Pagination ─────────────────────────────────────────────── -->
+    @if (totalPages() > 1) {
+      <div class="flex justify-center items-center gap-6 mt-4">
+        <button
+          id="prev-page-btn"
+          (click)="prevPage()"
+          [disabled]="currentPage() === 1"
+          class="flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-bold text-secondary hover:text-primary disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          <span class="material-symbols-outlined" style="font-size: 18px">chevron_left</span>
+          Précédent
+        </button>
+
+        <span class="text-primary font-bold tracking-wide border-b-2 border-primary/30 pb-1">
+          Page {{ currentPage() }} sur {{ totalPages() }}
+        </span>
+
+        <button
+          id="next-page-btn"
+          (click)="nextPage()"
+          [disabled]="currentPage() === totalPages()"
+          class="flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-bold text-secondary hover:text-primary disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          Suivant
+          <span class="material-symbols-outlined" style="font-size: 18px">chevron_right</span>
+        </button>
+      </div>
+    }
+  }
+</main>

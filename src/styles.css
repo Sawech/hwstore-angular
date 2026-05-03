@@ -1,3 +1,210 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
+
+@source './**/*.{html,ts}';
+
+/* Force Tailwind v4 to generate classes used in dynamic [ngClass] bindings */
+@source inline("px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border-2 transition-all cursor-pointer bg-primary text-white border-primary bg-white text-secondary border-outline-variant hover:border-primary hover:text-primary");
+
+
+@theme {
+  --color-primary: #a82b55;
+  --color-primary-container: #c8446d;
+  --color-primary-fixed: #ffd9e0;
+  --color-primary-fixed-dim: #ffb1c2;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #fffbff;
+  --color-on-primary-fixed: #3f0018;
+  --color-on-primary-fixed-variant: #8b1140;
+  --color-inverse-primary: #ffb1c2;
+
+  --color-secondary: #565e74;
+  --color-secondary-container: #dae2fd;
+  --color-secondary-fixed: #dae2fd;
+  --color-secondary-fixed-dim: #bec6e0;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #5c647a;
+  --color-on-secondary-fixed: #131b2e;
+  --color-on-secondary-fixed-variant: #3f465c;
+
+  --color-tertiary: #006b27;
+  --color-tertiary-container: #008734;
+  --color-tertiary-fixed: #86fb94;
+  --color-tertiary-fixed-dim: #6ade7b;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-container: #f7fff2;
+  --color-on-tertiary-fixed: #002107;
+  --color-on-tertiary-fixed-variant: #00531c;
+
+  --color-background: #f9f9f9;
+  --color-on-background: #1a1c1c;
+
+  --color-surface: #f9f9f9;
+  --color-surface-bright: #f9f9f9;
+  --color-surface-dim: #dadada;
+  --color-surface-variant: #e2e2e2;
+  --color-surface-tint: #ab2d58;
+
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f3f3f4;
+  --color-surface-container: #eeeeee;
+  --color-surface-container-high: #e8e8e8;
+  --color-surface-container-highest: #e2e2e2;
+
+  --color-on-surface: #1a1c1c;
+  --color-on-surface-variant: #574145;
+  --color-inverse-surface: #2f3131;
+  --color-inverse-on-surface: #f0f1f1;
+
+  --color-outline: #8a7175;
+  --color-outline-variant: #ddbfc4;
+
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error: #ffffff;
+  --color-on-error-container: #93000a;
+
+  --font-family-sans: 'Inter', sans-serif;
+  --font-family-headline: 'Inter', sans-serif;
+  --font-family-body: 'Inter', sans-serif;
+  --font-family-label: 'Inter', sans-serif;
+}
+
+@layer base {
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f9f9f9;
+    color: #1a1c1c;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background-color: #a82b55;
+    color: #ffffff;
+  }
+
+  .material-symbols-outlined {
+    font-variation-settings:
+      'FILL' 0,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 24;
+  }
+
+  .material-symbols-filled {
+    font-variation-settings:
+      'FILL' 1,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 24;
+  }
+}
+
+@layer components {
+  .btn-primary-gradient {
+    background: linear-gradient(135deg, #a82b55 0%, #c8446d 100%);
+  }
+
+  .glass-nav {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+
+  .hero-gradient {
+    background: linear-gradient(135deg, rgba(26, 28, 28, 0.95) 0%, rgba(26, 28, 28, 0.7) 100%);
+  }
+
+  .shadow-editorial {
+    box-shadow: 0px 20px 40px rgba(15, 23, 42, 0.06);
+  }
+
+  .solution-node {
+    @apply bg-surface-container-low text-secondary text-[10px] font-bold px-2 py-1 rounded flex items-center gap-1;
+  }
+
+  .solution-node::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #a82b55;
+    flex-shrink: 0;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tracking-editorial {
+    letter-spacing: -0.02em;
+  }
+
+  input[type='range'] {
+    accent-color: #a82b55;
+  }
+
+  .input-focus {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary;
+  }
+
+  .editorial-shadow {
+    box-shadow: 0px 20px 40px rgba(15, 23, 42, 0.06);
+  }
+
+  .ghost-border {
+    border: 1px solid rgba(221, 191, 196, 0.2);
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
+  }
+  .ghost-border:focus,
+  .ghost-border:focus-within {
+    border-color: #a82b55;
+    box-shadow: 0 0 0 4px rgba(168, 43, 85, 0.05);
+  }
+
+  .admin-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .admin-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .admin-scrollbar::-webkit-scrollbar-thumb {
+    background: #e2e2e2;
+    border-radius: 10px;
+  }
+  .admin-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #a82b55;
+  }
+
+  .admin-nav-active {
+    color: #a82b55;
+    font-weight: 600;
+    border-right: 4px solid #a82b55;
+    background-color: #ffffff;
+  }
+
+  .badge-delivered {
+    @apply bg-tertiary-fixed text-on-tertiary-fixed;
+  }
+  .badge-shipping {
+    @apply bg-secondary-fixed text-on-secondary-fixed;
+  }
+  .badge-pending {
+    @apply bg-primary-fixed text-on-primary-fixed;
+  }
+  .badge-cancelled {
+    @apply bg-error-container text-on-error-container;
+  }
+  .badge-processing {
+    @apply bg-secondary-container text-on-secondary-container;
+  }
+}

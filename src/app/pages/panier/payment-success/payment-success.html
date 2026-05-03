@@ -1,0 +1,135 @@
+<!-- ============================================================
+     HWstore — Payment Success Page
+     ============================================================ -->
+
+<div
+  class="min-h-screen flex flex-col"
+  style="background-color: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface)"
+>
+  <!-- ── Main Content ────────────────────────────────────────── -->
+  <main
+    class="flex-grow flex flex-col items-center justify-center px-6 py-24 w-full max-w-7xl mx-auto relative z-0"
+  >
+    <div class="w-full max-w-3xl flex flex-col items-center">
+      <!-- ─ Success Hero ─ -->
+      <div class="flex flex-col items-center text-center mb-16 animate-[fadeIn_0.5s_ease-out]">
+        <span
+          class="material-symbols-outlined mb-8 drop-shadow-sm"
+          style="
+            font-size: 96px;
+            color: rgb(168 43 85 / var(--tw-text-opacity, 1));
+            font-variation-settings: 'FILL' 1;
+          "
+          >check_circle</span
+        >
+
+        <h1
+          class="font-display text-5xl md:text-6xl font-black tracking-tight mb-6 leading-tight"
+          style="color: var(--md-sys-color-on-background)"
+        >
+          Paiement Réussi
+        </h1>
+
+        <p class="text-xl leading-relaxed max-w-xl" style="color: var(--md-sys-color-secondary)">
+          Merci pour votre commande&nbsp;! Votre architecture technique est en cours d'assemblage et
+          sera livré bientot.
+        </p>
+      </div>
+
+      <!-- ─ Receipt Card ─ -->
+      <div
+        class="w-full rounded-xl p-8 md:p-12 flex flex-col relative overflow-hidden gap-8"
+        style="
+          background-color: var(--md-sys-color-surface-container-lowest);
+          box-shadow: 0 20px 40px rgba(15, 23, 42, 0.06);
+        "
+      >
+        <!-- Decorative ghost border -->
+        <div
+          class="absolute inset-0 border pointer-events-none rounded-xl"
+          style="border-color: var(--md-sys-color-outline-variant); opacity: 0.2"
+        ></div>
+
+        <!-- Order Meta Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Order Number -->
+          <div class="flex flex-col gap-2">
+            <span
+              class="text-[10px] uppercase tracking-[0.1em] font-bold"
+              style="color: var(--md-sys-color-secondary)"
+              >Numéro de Commande</span
+            >
+            <span class="text-lg font-bold" style="color: var(--md-sys-color-on-background)">
+              @if (loading()) {
+                <span
+                  class="inline-block w-32 h-5 rounded animate-pulse"
+                  style="background-color: var(--md-sys-color-surface-container-high)"
+                ></span>
+              } @else {
+                #{{ cart()?.orderRef }}
+              }
+            </span>
+          </div>
+
+          <!-- Delivery Date -->
+          <div class="flex flex-col gap-2 md:items-center">
+            <span
+              class="text-[10px] uppercase tracking-[0.1em] font-bold"
+              style="color: var(--md-sys-color-secondary)"
+              >Montant Total</span
+            >
+            <span class="text-lg font-bold" style="color: var(--md-sys-color-on-background)">{{
+              cart() ? formatPrice(cart()!) : '-'
+            }}</span>
+          </div>
+
+          <!-- Status -->
+          <div class="flex flex-col gap-2 md:items-end">
+            <span
+              class="text-[10px] px-3 uppercase tracking-[0.1em] font-bold"
+              style="color: var(--md-sys-color-secondary)"
+              >Statut</span
+            >
+            @if (cart()) {
+              <span
+                class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
+                [ngClass]="getStatusClass(toLabel(cart()!.status))"
+              >
+                <span
+                  class="w-1.5 h-1.5 rounded-full mr-2"
+                  [ngClass]="getStatusDot(toLabel(cart()!.status))"
+                ></span>
+                {{ toLabel(cart()!.status) }}
+              </span>
+            }
+          </div>
+        </div>
+      </div>
+      <!-- /Receipt Card -->
+
+      <!-- ─ CTAs ─ -->
+      <div class="flex flex-col sm:flex-row gap-6 w-full justify-center items-center mt-12">
+        <!-- Primary CTA -->
+        <a
+          routerLink="/categories"
+          class="font-headline font-bold py-4 px-10 rounded-md text-center w-full sm:w-auto transition-all duration-300 transform hover:-translate-y-1 bg-gradient-to-br from-primary to-primary-container text-on-primary shadow-lg"
+        >
+          Continuer mes achats
+        </a>
+
+        <!-- Secondary CTA -->
+        <a
+          routerLink="/commandes"
+          class="font-headline font-bold py-4 px-10 rounded-md relative overflow-hidden group text-center w-full sm:w-auto transition-transform duration-300 hover:-translate-y-1 bg-secondary text-on-primary"
+        >
+          <div
+            class="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity duration-300"
+            style="background-color: var(--md-sys-color-surface-tint)"
+          ></div>
+          <span class="relative z-10">Voir mes commandes</span>
+        </a>
+      </div>
+      <!-- /CTAs -->
+    </div>
+  </main>
+</div>

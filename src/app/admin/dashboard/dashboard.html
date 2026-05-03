@@ -1,0 +1,207 @@
+<div class="pt-8 px-8 pb-12 min-h-screen">
+  <!-- Editorial header -->
+  <section class="mb-12">
+    <div class="flex items-end justify-between">
+      <div>
+        <span class="text-primary font-bold tracking-widest text-[10px] uppercase block mb-2"
+          >Performance du mois</span
+        >
+        <h2 class="text-[3.5rem] font-extrabold tracking-tighter leading-none text-on-surface">
+          Tableau de bord
+        </h2>
+      </div>
+      <select
+        class="bg-surface-container-low border-none rounded-lg text-s font-semibold px-4 py-2 focus:ring-1 focus:ring-primary outline-none"
+      >
+        <option>7 derniers jours</option>
+        <option>30 derniers jours</option>
+      </select>
+    </div>
+  </section>
+
+  <!-- Metrics Bento Grid -->
+  <section class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+    <!-- Sales -->
+    <div
+      class="bg-surface-container-lowest p-6 rounded-xl editorial-shadow relative overflow-hidden group"
+    >
+      <div
+        class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110"
+      ></div>
+      <div class="flex items-center justify-between mb-4">
+        <div
+          class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary"
+        >
+          <span class="material-symbols-outlined">payments</span>
+        </div>
+        <span class="text-tertiary font-bold text-xs flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">trending_up</span>
+          +{{ stats()?.salesTrend ?? 0 }}%
+        </span>
+      </div>
+      <p class="text-secondary text-sm font-medium">Ventes Totales</p>
+      <h3 class="text-2xl font-extrabold text-on-surface mt-1">
+        {{ formatPrice(stats()?.totalSales ?? 0) }}
+      </h3>
+    </div>
+
+    <!-- Orders -->
+    <div class="bg-surface-container-lowest p-6 rounded-xl editorial-shadow group">
+      <div class="flex items-center justify-between mb-4">
+        <div
+          class="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary"
+        >
+          <span class="material-symbols-outlined">shopping_bag</span>
+        </div>
+        <span class="text-tertiary font-bold text-xs flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">trending_up</span>
+          +{{ stats()?.ordersTrend ?? 0 }}%
+        </span>
+      </div>
+      <p class="text-secondary text-sm font-medium">Commandes</p>
+      <h3 class="text-2xl font-extrabold text-on-surface mt-1">
+        {{ stats()?.totalOrders ?? '—' }}
+      </h3>
+    </div>
+
+    <!-- Users -->
+    <div class="bg-surface-container-lowest p-6 rounded-xl editorial-shadow group">
+      <div class="flex items-center justify-between mb-4">
+        <div
+          class="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary"
+        >
+          <span class="material-symbols-outlined">group</span>
+        </div>
+        <span class="text-error font-bold text-xs flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">trending_down</span>
+          {{ stats()?.usersTrend ?? 0 }}%
+        </span>
+      </div>
+      <p class="text-secondary text-sm font-medium">Utilisateurs</p>
+      <h3 class="text-2xl font-extrabold text-on-surface mt-1">
+        {{ stats()?.totalUsers ?? 0 | number }}
+      </h3>
+    </div>
+
+    <!-- Stock -->
+    <div class="bg-surface-container-lowest p-6 rounded-xl editorial-shadow group">
+      <div class="flex items-center justify-between mb-4">
+        <div
+          class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary"
+        >
+          <span class="material-symbols-outlined">inventory</span>
+        </div>
+        <span
+          class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-error-container text-on-error-container"
+        >
+          <span class="w-1 h-1 rounded-full bg-error mr-1"></span>Alerte Stock
+        </span>
+      </div>
+      <p class="text-secondary text-sm font-medium">Articles en Stock</p>
+      <h3 class="text-2xl font-extrabold text-on-surface mt-1">
+        {{ stats()?.totalStock ?? 0 | number }}
+      </h3>
+    </div>
+  </section>
+
+  <!-- Chart + Table -->
+  <div class="space-y-8">
+    <!-- Sales Bar Chart -->
+    <div class="bg-surface-container-lowest p-8 rounded-xl editorial-shadow">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h4 class="text-lg font-bold text-on-surface">Croissance des Ventes</h4>
+          <p class="text-sm text-secondary">Aperçu hebdomadaire de la performance</p>
+        </div>
+      </div>
+      <div class="h-64 flex items-end justify-between gap-2 px-2 pb-6">
+        @for (bar of chart(); track bar.day) {
+          <div
+            class="w-full bg-surface-container-low rounded-t-lg relative group flex items-end h-full"
+          >
+            <div
+              class="w-full rounded-t-lg transition-all duration-500 group-hover:opacity-90"
+              [style.height]="bar.height"
+              [style.background]="getBarColor(bar.value)"
+            ></div>
+            <span
+              class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-secondary"
+            >
+              {{ bar.day }}
+            </span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Recent orders table -->
+    <div class="bg-white rounded-xl editorial-shadow overflow-hidden">
+      <div
+        class="px-8 py-6 flex items-center justify-between"
+        style="border-bottom: 1px solid #f3f3f4"
+      >
+        <h4 class="text-lg font-bold text-on-surface">Commandes Récentes</h4>
+        <a
+          [routerLink]="['/admin/commandes']"
+          class="text-primary text-sm font-semibold hover:underline"
+          >Voir tout</a
+        >
+      </div>
+
+      @if (loadingOrders()) {
+        <div class="flex items-center justify-center py-16">
+          <span class="material-symbols-outlined text-4xl text-primary animate-spin"
+            >progress_activity</span
+          >
+        </div>
+      } @else if (recentOrders().length === 0) {
+        <div class="py-16 text-center text-secondary">
+          <span class="material-symbols-outlined text-4xl block mb-2">inbox</span>
+          Aucune commande récente
+        </div>
+      } @else {
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead>
+              <tr
+                class="bg-surface-container-low text-secondary text-[10px] font-black uppercase tracking-widest"
+              >
+                <th class="px-8 py-4">ID Commande</th>
+                <th class="px-8 py-4">Client</th>
+                <th class="px-8 py-4">Date</th>
+                <th class="px-8 py-4">Statut</th>
+                <th class="px-8 py-4 text-right">Montant</th>
+              </tr>
+            </thead>
+            <tbody class="text-sm divide-y divide-surface-container-low">
+              @for (order of recentOrders(); track order.id) {
+                <tr class="hover:bg-surface-container-low/50 transition-colors">
+                  <td class="px-8 py-5 font-mono text-secondary">#{{ order.sessionToken }}</td>
+                  <td class="px-8 py-5 font-bold">{{ order.user.firstName }}</td>
+                  <td class="px-8 py-5 text-secondary">
+                    {{ order.createdAt | date: 'd MMM, HH:mm' }}
+                  </td>
+                  <td class="px-8 py-5">
+                    <span
+                      class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold"
+                      [ngClass]="getStatusClass(order.status)"
+                    >
+                      <span
+                        class="w-1.5 h-1.5 rounded-full mr-2"
+                        [ngClass]="getStatusDot(order.status)"
+                      ></span>
+                      {{ order.status }}
+                    </span>
+                  </td>
+                  <td class="px-8 py-5 text-right font-bold">
+                    {{ formatCartPrice(order) }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+</div>

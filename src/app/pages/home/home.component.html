@@ -1,0 +1,263 @@
+<section class="relative min-h-screen flex items-center pt-20 overflow-hidden bg-on-background">
+  <!-- Background image + gradient overlay -->
+  <div class="absolute inset-0 z-0">
+    <img
+      src="https://lh3.googleusercontent.com/aida-public/AB6AXuDr_TFudXUr8UyOFCw9lNjkEU98NacTPYSzUN3RjaXdEgXvpSCW1kaES5k9irSvEOHK8vkdqzL7yo7LYOBka1t8mojnQkltoaeWEeHvbt0G4Qa8VeZn1zuiXJnbA7Ys8Ym9kCX6xbTxIRXxbqeZKN78wZxYTUadQ_fhNEJogMwpaITp6FnDsnhjuykWMjARQVciLUOtSgfZ8gtIqKS-UuQN9Y0Qp2siTlpNtfGGrxxyTbfOrl_VivN2da0Rp9f0KKOJ90c7IY-mxrg"
+      alt="PC Gaming haute performance"
+      class="w-full h-full object-cover opacity-40"
+    />
+    <div class="absolute inset-0 hero-gradient"></div>
+  </div>
+
+  <!-- Hero content -->
+  <div class="relative z-10 max-w-7xl mx-auto px-8 w-full py-24">
+    <div class="max-w-3xl">
+      <!-- Badge -->
+      <span
+        class="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-[0.2em] uppercase text-white bg-primary rounded-full"
+      >
+        Excellence Technologique
+      </span>
+
+      <!-- Headline -->
+      <h1 class="text-white text-6xl md:text-8xl font-black leading-[1.05] tracking-tighter mb-8">
+        Solutions <br />
+        <span class="text-primary-container">Informatiques</span> <br />
+        Premium
+      </h1>
+
+      <!-- Subtitle -->
+      <p
+        class="text-surface-container-highest text-lg md:text-xl leading-relaxed mb-10 opacity-90 max-w-xl"
+      >
+        Ordinateurs, composants haut de gamme et expertise IT à votre service. L'architecture
+        numérique de précision pour professionnels et passionnés.
+      </p>
+
+      <!-- CTAs -->
+      <div class="flex flex-wrap gap-4">
+        <a
+          routerLink="/categories"
+          class="px-8 py-4 btn-primary-gradient text-white font-bold rounded-lg hover:scale-105 transition-transform active:scale-100 shadow-xl shadow-primary/30"
+        >
+          Découvrir la Boutique
+        </a>
+        <a
+          routerLink="/configurateur-pc"
+          class="px-8 py-4 border-2 border-white/20 hover:border-white/50 text-white font-bold rounded-lg transition-all backdrop-blur-sm hover:bg-white/10"
+        >
+          Configurer mon PC
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Decorative SVG circuit pattern -->
+  <div class="absolute bottom-0 right-0 w-1/3 h-1/2 opacity-10 pointer-events-none">
+    <svg class="w-full h-full text-white fill-current" viewBox="0 0 400 400">
+      <path d="M50 50h300v300H50z" fill="none" stroke="currentColor" stroke-width="2"></path>
+      <circle cx="100" cy="100" r="10"></circle>
+      <circle cx="300" cy="100" r="10"></circle>
+      <circle cx="100" cy="300" r="10"></circle>
+      <circle cx="300" cy="300" r="10"></circle>
+      <path d="M100 100l200 200M300 100L100 300" stroke="currentColor" stroke-width="1"></path>
+      <circle cx="200" cy="200" r="20" fill="none" stroke="currentColor" stroke-width="2"></circle>
+      <path
+        d="M200 50v60M200 290v60M50 200h60M290 200h60"
+        stroke="currentColor"
+        stroke-width="2"
+      ></path>
+    </svg>
+  </div>
+</section>
+
+<!-- ── CATÉGORIES PHARES ─────────────────────────────────────── -->
+<section class="py-24 bg-surface px-8">
+  <div class="max-w-7xl mx-auto">
+    <!-- Section header -->
+    <div class="flex justify-between items-end mb-16">
+      <div class="max-w-xl">
+        <h2 class="text-4xl font-black tracking-tight text-on-background mb-4">Catégories</h2>
+        <p class="text-secondary leading-relaxed">
+          Naviguez à travers notre sélection rigoureuse de matériels informatiques de pointe.
+        </p>
+      </div>
+      <a
+        routerLink="/categories"
+        class="text-primary font-bold flex items-center gap-2 hover:gap-4 transition-all whitespace-nowrap"
+      >
+        Voir tout
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </a>
+    </div>
+
+    <!-- Category grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      @for (cat of categories(); track cat.name) {
+        <a
+          [routerLink]="['/categories', cat.slug]"
+          class="group relative aspect-[4/3] bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all block"
+        >
+          <img
+            [src]="cat.image"
+            [alt]="cat.name"
+            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+            loading="lazy"
+          />
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
+          ></div>
+          <div class="absolute bottom-0 left-0 p-8">
+            <h3 class="text-white text-2xl font-bold mb-2">{{ cat.name }}</h3>
+            <p class="text-white/70 text-sm">{{ cat.description }}</p>
+          </div>
+        </a>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ── MEILLEURES VENTES ─────────────────────────────────────── -->
+<section class="py-20 bg-white px-8">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex justify-between items-end mb-16">
+      <h2 class="text-4xl font-black tracking-tight text-on-background">Nouveau Produits</h2>
+      <a
+        routerLink="/categories"
+        class="text-primary font-bold flex items-center gap-2 hover:gap-4 transition-all"
+      >
+        Tout voir
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      @if (isLoading()) {
+        @for (i of [1, 2, 3, 4]; track i) {
+          <div class="bg-surface-container-low p-6 rounded-xl animate-pulse">
+            <div class="aspect-square bg-surface-container rounded-lg mb-6"></div>
+            <div class="h-4 bg-surface-container rounded mb-2 w-3/4"></div>
+            <div class="h-6 bg-surface-container rounded mb-6 w-1/2"></div>
+            <div class="h-10 bg-surface-container rounded"></div>
+          </div>
+        }
+      } @else {
+        @for (product of bestSellers(); track product.id) {
+          <app-product-card [product]="product" variant="grid" />
+        }
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ── L'ENGAGEMENT HWSTORE ─────────────────────────────────── -->
+<section class="py-24 bg-surface px-8">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-black tracking-tight text-on-background mb-4">
+        L'Engagement HWstore
+      </h2>
+      <p class="text-secondary leading-relaxed max-w-xl mx-auto">
+        Plus qu'un magasin, un partenaire de confiance pour votre infrastructure IT.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      @for (feature of features; track feature.title) {
+        <div
+          class="p-10 bg-white rounded-2xl shadow-editorial hover:-translate-y-2 transition-all duration-300"
+        >
+          <div
+            class="w-14 h-14 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-6"
+          >
+            <span class="material-symbols-outlined text-3xl">{{ feature.icon }}</span>
+          </div>
+          <h3 class="text-xl font-bold text-on-background mb-3">{{ feature.title }}</h3>
+          <p class="text-secondary text-sm leading-relaxed">{{ feature.description }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ── TÉMOIGNAGES ────────────────────────────────────────────── -->
+<section class="py-24 bg-white px-8 overflow-hidden">
+  <div class="max-w-7xl mx-auto">
+    <h2 class="text-4xl font-black tracking-tight text-on-background mb-16 text-center">
+      Ils nous font confiance
+    </h2>
+
+    <div class="flex flex-col md:flex-row flex-wrap pb-4 gap-8">
+      @for (t of testimonials; track t.name) {
+        <div
+          class="w-full md:min-w-80 md:max-w-sm snap-center p-10 bg-surface-container-low rounded-3xl relative shrink-0"
+        >
+          <!-- Large quote mark decoration -->
+          <span class="material-symbols-outlined text-6xl text-primary/10 absolute top-6 right-8">
+            format_quote
+          </span>
+
+          <!-- Stars -->
+          <div class="flex gap-1 text-amber-400 mb-6">
+            @for (filled of getStars(t.rating); track $index) {
+              <span
+                class="material-symbols-outlined text-sm"
+                style="font-variation-settings: 'FILL' 1"
+                >star</span
+              >
+            }
+          </div>
+
+          <p class="text-on-background text-lg italic mb-8 leading-relaxed">
+            {{ t.quote }}
+          </p>
+
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 flex-shrink-0">
+              <img
+                [src]="t.avatar"
+                [alt]="t.name"
+                class="w-full h-full object-cover"
+                loading="lazy"
+              />
+            </div>
+            <div>
+              <p class="font-bold text-on-background">{{ t.name }}</p>
+              <p class="text-secondary text-xs">{{ t.role }}</p>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ── PC CONFIGURATOR CTA ───────────────────────────────────── -->
+<section class="py-24 bg-on-background px-8 overflow-hidden relative">
+  <div class="absolute inset-0 opacity-20">
+    <div class="absolute top-0 right-0 w-96 h-96 rounded-full bg-primary blur-[120px]"></div>
+    <div class="absolute bottom-0 left-0 w-96 h-96 rounded-full bg-secondary blur-[120px]"></div>
+  </div>
+  <div class="relative z-10 max-w-7xl mx-auto text-center">
+    <span
+      class="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-[0.2em] uppercase text-primary bg-primary/10 rounded-full"
+    >
+      Configurateur PC
+    </span>
+    <h2 class="text-5xl md:text-6xl font-black tracking-tighter text-white mb-6">
+      Architecturez votre <br />
+      <span class="text-primary-container">puissance idéale.</span>
+    </h2>
+    <p class="text-surface-container-highest text-lg mb-10 max-w-xl mx-auto leading-relaxed">
+      Choisissez chaque composant avec précision. Notre configurateur calcule en temps réel la
+      compatibilité et le prix total.
+    </p>
+    <a
+      routerLink="/configurateur-pc"
+      class="inline-flex items-center gap-3 px-10 py-5 btn-primary-gradient text-white font-bold rounded-xl hover:scale-105 transition-transform shadow-2xl shadow-primary/30 text-lg"
+    >
+      <span class="material-symbols-outlined">settings_suggest</span>
+      Démarrer la Configuration
+    </a>
+  </div>
+</section>

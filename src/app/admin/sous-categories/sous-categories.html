@@ -1,0 +1,461 @@
+<div class="pt-8 px-12 pb-12 min-h-screen">
+  <!-- ═══════════════════════════════════════════════════════
+       Header
+  ════════════════════════════════════════════════════════ -->
+  <div class="flex justify-between items-end mb-12">
+    <div>
+      <h2 class="text-[3rem] font-extrabold tracking-tight leading-none text-on-surface">
+        Gestion des <span class="text-primary">Sous-Catégories</span>
+      </h2>
+    </div>
+    <button
+      id="btn-nouvelle-sous-categorie"
+      (click)="openModal()"
+      class="bg-gradient-to-br from-primary to-primary-container text-white px-8 py-4 rounded-xl font-semibold flex items-center gap-3 shadow-xl shadow-primary/25 hover:scale-[1.02] transition-all"
+    >
+      <span class="material-symbols-outlined">add_circle</span>
+      <span>Nouvelle Sous-Catégorie</span>
+    </button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       Stats bento
+  ════════════════════════════════════════════════════════ -->
+  <div class="grid grid-cols-3 gap-6 mb-12">
+    <div class="bg-surface-container-low p-6 rounded-2xl border-l-4 border-primary">
+      <p class="text-primary font-bold text-sm mb-1">Total Sous-Catégories</p>
+      <p class="text-3xl font-bold">{{ sousCategories().length }}</p>
+    </div>
+    <div class="bg-surface-container-low p-6 rounded-2xl">
+      <p class="text-secondary font-medium text-sm mb-1">Catégories parentes</p>
+      <p class="text-3xl font-bold">{{ categoryOptions().length }}</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       Table card
+  ════════════════════════════════════════════════════════ -->
+  <div class="bg-white rounded-[2rem] shadow-sm overflow-hidden">
+    <!-- Card header -->
+    <div
+      class="p-8 flex justify-between items-center"
+      style="border-bottom: 1px solid rgba(238, 238, 238, 0.5)"
+    >
+      <h3 class="text-xl font-bold text-on-surface">Inventaire des Sous-Catégories</h3>
+      <div class="flex gap-2">
+        <button class="p-2 hover:bg-surface-container rounded-lg transition-colors text-secondary">
+          <span class="material-symbols-outlined">filter_list</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ─── Skeleton loader ─────────────────────────── -->
+    @if (loading()) {
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-surface-container-low/30">
+            <th class="px-8 py-5 text-xs font-bold text-secondary uppercase tracking-widest w-20">
+              Image
+            </th>
+            <th class="px-8 py-5 text-xs font-bold text-secondary uppercase tracking-widest">
+              Nom
+            </th>
+            <th class="px-8 py-5 text-xs font-bold text-secondary uppercase tracking-widest">
+              Slug
+            </th>
+            <th class="px-8 py-5 text-xs font-bold text-secondary uppercase tracking-widest">
+              Catégorie parente
+            </th>
+            <th
+              class="px-8 py-5 text-xs font-bold text-secondary uppercase tracking-widest text-right"
+            >
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-surface-container-low">
+          @for (row of skeletonRows; track $index) {
+            <tr class="animate-pulse">
+              <td class="px-8 py-5">
+                <div class="w-12 h-12 rounded-xl bg-surface-container"></div>
+              </td>
+              <td class="px-8 py-5">
+                <div class="h-4 bg-surface-container rounded w-36 mb-2"></div>
+                <div class="h-3 bg-surface-container-low rounded w-24"></div>
+              </td>
+              <td class="px-8 py-5">
+                <div class="h-3 bg-surface-container-low rounded w-28"></div>
+              </td>
+              <td class="px-8 py-5">
+                <div class="h-3 bg-surface-container-low rounded w-24"></div>
+              </td>
+              <td class="px-8 py-5 text-center">
+                <div class="h-4 bg-surface-container rounded w-8 mx-auto"></div>
+              </td>
+              <td class="px-8 py-5 text-right">
+                <div class="h-8 bg-surface-container rounded w-20 ml-auto"></div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+
+    <!-- ─── Data table ──────────────────────────────── -->
+    @else {
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-surface-container-low/30">
+            <th class="px-14 py-5 text-xs font-bold text-secondary uppercase tracking-widest w-20">
+              Image
+            </th>
+            <th class="px-14 py-5 text-xs font-bold text-secondary uppercase tracking-widest">
+              Nom
+            </th>
+            <th class="px-14 py-5 text-xs font-bold text-secondary uppercase tracking-widest">
+              Slug
+            </th>
+            <th class="px-14 py-5 text-xs font-bold text-secondary uppercase tracking-widest">
+              Catégorie parente
+            </th>
+            <th
+              class="px-14 py-5 text-xs font-bold text-secondary uppercase tracking-widest text-right"
+            >
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-surface-container-low">
+          @for (item of sousCategories(); track item.id) {
+            <tr class="group hover:bg-surface-container-low/50 transition-all cursor-pointer">
+              <!-- Thumbnail -->
+              <td class="px-14 py-5">
+                <div
+                  class="w-12 h-12 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0 flex items-center justify-center"
+                >
+                  @if (item.image) {
+                    <img [src]="item.image" [alt]="item.name" class="w-full h-full object-cover" />
+                  } @else {
+                    <span class="material-symbols-outlined text-xl text-secondary/40"
+                      >category</span
+                    >
+                  }
+                </div>
+              </td>
+
+              <!-- Name -->
+              <td class="px-14 py-5">
+                <span
+                  class="font-bold text-base text-on-surface group-hover:text-primary transition-colors"
+                >
+                  {{ item.name }}
+                </span>
+              </td>
+
+              <!-- Slug -->
+              <td class="px-14 py-5">
+                <span
+                  class="px-2 py-0.5 bg-primary/10 rounded text-[10px] font-bold text-primary uppercase tracking-tight"
+                >
+                  {{ item.slug }}
+                </span>
+              </td>
+
+              <!-- Parent category -->
+              <td class="px-14 py-5 text-secondary text-sm">
+                {{ categoryName(item) }}
+              </td>
+
+              <!-- Actions -->
+              <td class="px-14 py-5 text-right">
+                <div
+                  class="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <button
+                    [id]="'btn-edit-sc-' + item.id"
+                    (click)="openModal(item)"
+                    class="p-2 text-secondary hover:text-primary transition-colors rounded-lg hover:bg-primary/10"
+                  >
+                    <span class="material-symbols-outlined">edit</span>
+                  </button>
+                  <button
+                    [id]="'btn-delete-sc-' + item.id"
+                    (click)="deleteItem(item.id)"
+                    class="p-2 text-secondary hover:text-error transition-colors rounded-lg hover:bg-error/10"
+                  >
+                    <span class="material-symbols-outlined">delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      @if (sousCategories().length === 0) {
+        <div class="py-20 text-center text-secondary">
+          <span class="material-symbols-outlined text-5xl block mb-3 text-primary/30"
+            >category</span
+          >
+          Aucune sous-catégorie. Créez-en une !
+        </div>
+      }
+    }
+  </div>
+  <!-- /card -->
+</div>
+<!-- /page -->
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MODAL — Create / Edit
+════════════════════════════════════════════════════════════════ -->
+@if (showModal()) {
+  <div
+    id="modal-backdrop"
+    class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+    (click)="closeModal()"
+  >
+    <div
+      class="bg-white rounded-2xl w-full max-w-2xl flex flex-col max-h-[92vh] shadow-2xl"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Modal header -->
+      <div
+        class="px-8 py-6 flex items-center justify-between flex-shrink-0"
+        style="border-bottom: 1px solid #f3f3f4"
+      >
+        <h3 class="text-xl font-bold text-on-surface">
+          {{ isEditMode() ? 'Modifier la Sous-Catégorie' : 'Nouvelle Sous-Catégorie' }}
+        </h3>
+        <button
+          id="btn-close-modal"
+          (click)="closeModal()"
+          class="p-2 text-secondary hover:text-on-surface rounded-lg hover:bg-surface-container-low transition-colors"
+        >
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <!-- Scrollable body -->
+      <div class="overflow-y-auto flex-1 p-8 space-y-6">
+        <!-- ── Name ── -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-secondary mb-2">
+            Nom *
+          </label>
+          <input
+            id="input-sc-name"
+            type="text"
+            placeholder="ex: Processeurs Intel"
+            [value]="fieldName()"
+            (input)="onNameInput($event)"
+            class="w-full bg-surface border-0 rounded-lg p-3.5 text-on-surface focus:ring-2 focus:ring-primary/20 transition-all outline-none"
+          />
+        </div>
+
+        <!-- ── Slug ── -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-secondary mb-2">
+            Slug *
+          </label>
+          <input
+            id="input-sc-slug"
+            type="text"
+            placeholder="ex: processeurs-intel"
+            [value]="fieldSlug()"
+            (input)="onSlugInput($event)"
+            class="w-full bg-surface border-0 rounded-lg p-3.5 text-on-surface focus:ring-2 focus:ring-primary/20 transition-all outline-none font-mono text-sm"
+          />
+        </div>
+
+        <!-- ── Description ── -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-secondary mb-2">
+            Description
+          </label>
+          <textarea
+            id="input-sc-description"
+            rows="3"
+            placeholder="Description de la sous-catégorie..."
+            [value]="fieldDescription()"
+            (input)="onDescriptionInput($event)"
+            class="w-full bg-surface border-0 rounded-lg p-3.5 text-on-surface focus:ring-2 focus:ring-primary/20 resize-none transition-all outline-none"
+          ></textarea>
+        </div>
+
+        <!-- ── Image URL ── -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-secondary mb-2">
+            URL de l'image
+          </label>
+          <input
+            id="input-sc-image"
+            type="url"
+            placeholder="https://..."
+            [value]="fieldImage()"
+            (input)="onImageInput($event)"
+            class="w-full bg-surface border-0 rounded-lg p-3.5 text-on-surface focus:ring-2 focus:ring-primary/20 transition-all outline-none"
+          />
+        </div>
+
+        <!-- ── Category select ── -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-secondary mb-2">
+            Catégorie parente *
+          </label>
+          <div class="relative">
+            <select
+              id="select-sc-category"
+              (change)="onCategoryChange($event)"
+              class="w-full appearance-none bg-surface border-0 rounded-lg p-3.5 pr-10 text-on-surface focus:ring-2 focus:ring-primary/20 transition-all outline-none cursor-pointer"
+            >
+              <option value="" [selected]="fieldCategoryId() === null">
+                — Sélectionner une catégorie —
+              </option>
+              @for (cat of categoryOptions(); track cat.id) {
+                <option [value]="cat.id" [selected]="fieldCategoryId() === cat.id">
+                  {{ cat.name }}
+                </option>
+              }
+            </select>
+            <span
+              class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-secondary"
+            >
+              expand_more
+            </span>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════
+             Tags builder
+        ════════════════════════════════════════════ -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-secondary mb-3">
+            Tags
+            <span class="normal-case font-normal text-secondary/60">(clé → valeurs multiples)</span>
+          </label>
+
+          <!-- Add tag group row -->
+          <div class="flex gap-2 mb-4">
+            <input
+              #tagNameInput
+              id="input-new-tag-name"
+              type="text"
+              placeholder='Nom du tag, ex: "Processeur"'
+              class="flex-1 bg-surface border-0 rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all outline-none"
+              (keydown.enter)="addTagGroup(tagNameInput); $event.preventDefault()"
+            />
+            <button
+              type="button"
+              id="btn-add-tag-group"
+              (click)="addTagGroup(tagNameInput)"
+              class="px-5 py-3 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors flex items-center gap-2"
+            >
+              <span class="material-symbols-outlined text-base">add</span>
+              Ajouter
+            </button>
+          </div>
+
+          <!-- Tag groups list -->
+          <div class="space-y-4">
+            @for (group of tagGroups(); track group.uid) {
+              <div class="bg-surface rounded-xl p-4 border border-surface-container">
+                <!-- Tag group header -->
+                <div class="flex items-center justify-between mb-3">
+                  <span class="font-semibold text-sm text-on-surface">
+                    <span class="material-symbols-outlined text-base align-middle mr-1 text-primary"
+                      >label</span
+                    >
+                    {{ group.name }}
+                  </span>
+                  <button
+                    type="button"
+                    (click)="removeTagGroup(group.uid)"
+                    class="p-1 text-secondary hover:text-error hover:bg-error/10 rounded-lg transition-colors"
+                  >
+                    <span class="material-symbols-outlined text-base">delete</span>
+                  </button>
+                </div>
+
+                <!-- Values pills -->
+                <div class="flex flex-wrap gap-2 mb-3">
+                  @for (val of group.values; track val) {
+                    <span
+                      class="inline-flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-semibold"
+                    >
+                      {{ val }}
+                      <button
+                        type="button"
+                        (click)="removeTagValue(group.uid, val)"
+                        class="hover:text-error transition-colors ml-0.5"
+                      >
+                        <span class="material-symbols-outlined text-xs">close</span>
+                      </button>
+                    </span>
+                  }
+                  @if (group.values.length === 0) {
+                    <span class="text-secondary/50 text-xs italic">Aucune valeur ajoutée</span>
+                  }
+                </div>
+
+                <!-- Add value input -->
+                <div class="flex gap-2">
+                  <input
+                    #tagValInput
+                    type="text"
+                    placeholder="ex: i7"
+                    class="flex-1 bg-surface-container-low border-0 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 transition-all outline-none"
+                    (keydown.enter)="addTagValue(group.uid, tagValInput); $event.preventDefault()"
+                  />
+                  <button
+                    type="button"
+                    (click)="addTagValue(group.uid, tagValInput)"
+                    class="px-3 py-2 bg-surface-container text-on-surface rounded-lg text-xs font-bold hover:bg-primary/10 hover:text-primary transition-colors flex items-center gap-1"
+                  >
+                    <span class="material-symbols-outlined text-sm">add</span>
+                  </button>
+                </div>
+              </div>
+            }
+
+            @if (tagGroups().length === 0) {
+              <div
+                class="text-center py-6 text-secondary/50 text-sm border border-dashed border-surface-container rounded-xl"
+              >
+                <span class="material-symbols-outlined text-3xl block mb-2 text-primary/20"
+                  >label_off</span
+                >
+                Aucun tag. Créez des groupes de tags ci-dessus.
+              </div>
+            }
+          </div>
+        </div>
+        <!-- /tags -->
+      </div>
+      <!-- /scrollable body -->
+
+      <!-- Modal footer -->
+      <div class="px-8 py-5 flex gap-3 flex-shrink-0" style="border-top: 1px solid #f3f3f4">
+        <button
+          id="btn-modal-cancel"
+          type="button"
+          (click)="closeModal()"
+          class="flex-1 py-3 px-4 border border-surface-container text-secondary font-semibold rounded-lg hover:bg-surface-container-low transition-colors"
+        >
+          Annuler
+        </button>
+        <button
+          id="btn-modal-submit"
+          type="button"
+          [disabled]="!isFormValid() || saving()"
+          (click)="saveItem()"
+          class="flex-1 py-3 px-4 bg-gradient-to-br from-primary to-primary-container text-white font-bold rounded-lg shadow-lg shadow-primary/20 hover:scale-[1.01] transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
+        >
+          {{ saving() ? 'Enregistrement...' : isEditMode() ? 'Mettre à jour' : 'Créer' }}
+        </button>
+      </div>
+    </div>
+    <!-- /modal panel -->
+  </div>
+  <!-- /backdrop -->
+}

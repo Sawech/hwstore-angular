@@ -1,0 +1,46 @@
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ToastService } from '../../core/toast.service';
+
+@Component({
+  selector: 'admin-toast',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <div class="fixed top-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none">
+      @for (toast of toastService.toasts(); track toast.id) {
+        <div
+          class="pointer-events-auto flex items-center gap-3 px-5 py-4 rounded-xl shadow-xl text-sm font-semibold min-w-[280px] max-w-sm animate-fade-in-up"
+          [ngClass]="{
+            'bg-white border-l-4 border-tertiary text-on-surface': toast.type === 'success',
+            'bg-white border-l-4 border-error text-on-surface': toast.type === 'error',
+            'bg-white border-l-4 border-secondary text-on-surface': toast.type === 'info'
+          }">
+          <span class="material-symbols-outlined text-xl"
+            [ngClass]="{
+              'text-tertiary': toast.type === 'success',
+              'text-error': toast.type === 'error',
+              'text-secondary': toast.type === 'info'
+            }">
+            {{ toast.type === 'success' ? 'check_circle' : toast.type === 'error' ? 'error' : 'info' }}
+          </span>
+          <span class="flex-1">{{ toast.message }}</span>
+          <button class="text-secondary hover:text-on-surface transition-colors ml-2"
+            (click)="toastService.dismiss(toast.id)">
+            <span class="material-symbols-outlined text-base">close</span>
+          </button>
+        </div>
+      }
+    </div>
+  `,
+  styles: [`
+    @keyframes fade-in-up {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up { animation: fade-in-up 0.25s ease-out; }
+  `]
+})
+export class ToastComponent {
+  toastService = inject(ToastService);
+}

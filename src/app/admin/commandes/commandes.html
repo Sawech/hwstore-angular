@@ -1,0 +1,205 @@
+<div class="p-8 min-h-screen">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
+    <div>
+      <h2 class="text-[3rem] font-extrabold tracking-tight leading-none text-on-surface">
+        Gestion des <span class="text-primary">Commandes</span>
+      </h2>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="md:col-span-2 bg-surface-container-low p-6 rounded-xl">
+      <label class="block text-[10px] font-bold text-secondary uppercase tracking-widest mb-3"
+        >Recherche Globale</label
+      >
+      <div class="relative">
+        <input
+          type="text"
+          placeholder="ID, Nom du client, ou Email..."
+          (input)="onSearch($event)"
+          class="w-full bg-white border-none rounded-lg py-3 pl-11 focus:ring-2 focus:ring-primary/20 text-sm outline-none"
+        />
+        <span
+          class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+          >search</span
+        >
+      </div>
+    </div>
+    <div class="bg-surface-container-low p-6 rounded-xl">
+      <label class="block text-[10px] font-bold text-secondary uppercase tracking-widest mb-3"
+        >Statut</label
+      >
+      <select
+        (change)="onStatusFilter($event)"
+        class="w-full bg-white border-none rounded-lg py-3 focus:ring-2 focus:ring-primary/20 text-sm outline-none appearance-none"
+      >
+        @for (s of statusOptions; track s) {
+          <option [value]="s === 'Tous les statuts' ? '' : s">{{ s }}</option>
+        }
+      </select>
+    </div>
+    <div class="bg-surface-container-low p-6 rounded-xl">
+      <label class="block text-[10px] font-bold text-secondary uppercase tracking-widest mb-3"
+        >Période</label
+      >
+      <input
+        type="date"
+        class="w-full bg-white border-none rounded-lg py-3 px-4 focus:ring-2 focus:ring-primary/20 text-sm outline-none"
+      />
+    </div>
+  </div>
+
+  <div class="bg-white rounded-2xl shadow-sm overflow-hidden mb-12">
+    <div class="overflow-x-auto">
+      @if (loading()) {
+        <div class="flex items-center justify-center py-20">
+          <span class="material-symbols-outlined text-5xl text-primary animate-spin"
+            >progress_activity</span
+          >
+        </div>
+      } @else {
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-50/50">
+              <th class="px-8 py-5 text-[10px] font-black text-secondary uppercase tracking-widest">
+                ID Commande
+              </th>
+              <th class="px-8 py-5 text-[10px] font-black text-secondary uppercase tracking-widest">
+                Date
+              </th>
+              <th class="px-8 py-5 text-[10px] font-black text-secondary uppercase tracking-widest">
+                Client
+              </th>
+              <th class="px-8 py-5 text-[10px] font-black text-secondary uppercase tracking-widest">
+                Montant
+              </th>
+              <th class="px-8 py-5 text-[10px] font-black text-secondary uppercase tracking-widest">
+                Statut
+              </th>
+              <th
+                class="px-8 py-5 text-[10px] font-black text-secondary uppercase tracking-widest text-right"
+              >
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-50">
+            @for (order of result()?.data ?? []; track order.id) {
+              <tr class="hover:bg-slate-50/50 transition-colors group">
+                <td class="px-8 py-6">
+                  <span class="font-mono text-sm font-bold text-primary"
+                    >#{{ order.orderRef }}</span
+                  >
+                </td>
+                <td class="px-8 py-6 text-sm text-secondary">
+                  {{ order.createdAt | date: 'd MMM yyyy' }}
+                </td>
+                <td class="px-8 py-6">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold text-xs"
+                    >
+                      {{ getInitials(order.user.firstName) }}
+                    </div>
+                    <span class="font-medium text-on-surface">{{ order.user.firstName }}</span>
+                  </div>
+                </td>
+                <td class="px-8 py-6 font-bold text-on-surface">{{ formatPrice(order) }}</td>
+                <td class="px-8 py-6">
+                  <span
+                    class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
+                    [ngClass]="getStatusClass(toLabel(order.status))"
+                  >
+                    <span
+                      class="w-1.5 h-1.5 rounded-full mr-2"
+                      [ngClass]="getStatusDot(toLabel(order.status))"
+                    ></span>
+                    {{ toLabel(order.status) }}
+                  </span>
+                </td>
+                <td class="px-8 py-6 text-right">
+                  <div
+                    class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <button
+                      class="p-2 hover:text-primary transition-colors text-secondary"
+                      title="Voir"
+                    >
+                      <span class="material-symbols-outlined text-xl">visibility</span>
+                    </button>
+                    <div class="relative">
+                      <button
+                        class="p-2 hover:text-primary transition-colors text-secondary"
+                        (click)="toggleStatusMenu(order.id)"
+                        title="Modifier le statut"
+                      >
+                        <span class="material-symbols-outlined text-xl">edit</span>
+                      </button>
+                      @if (activeStatusMenu() === order.id) {
+                        <div
+                          class="absolute right-0 top-full mt-1 bg-white rounded-xl shadow-xl z-10 py-2 w-44 editorial-shadow"
+                        >
+                          @for (s of editableStatuses; track s) {
+                            <button
+                              type="button"
+                              (click)="updateStatus(order.id, s)"
+                              class="w-full text-left px-4 py-2 text-sm hover:bg-surface-container-low transition-colors font-medium"
+                              [class.text-primary]="toLabel(order.status) === s"
+                            >
+                              {{ s }}
+                            </button>
+                          }
+                        </div>
+                      }
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        @if ((result()?.data ?? []).length === 0) {
+          <div class="py-16 text-center text-secondary">
+            <span class="material-symbols-outlined text-5xl block mb-2 text-primary/30"
+              >shopping_cart</span
+            >
+            Aucune commande trouvée.
+          </div>
+        }
+      }
+    </div>
+
+    <div
+      class="px-8 py-4 bg-slate-50/30 flex items-center justify-between"
+      style="border-top: 1px solid #f8f8f8"
+    >
+      <span class="text-xs text-secondary font-medium"> {{ result()?.total ?? 0 }} commandes </span>
+      <div class="flex gap-2">
+        <button
+          (click)="prevPage()"
+          [disabled]="page() <= 1"
+          class="p-2 hover:bg-white rounded-lg transition-colors disabled:opacity-40"
+        >
+          <span class="material-symbols-outlined">chevron_left</span>
+        </button>
+        @for (p of getPages(); track p) {
+          <button
+            (click)="goToPage(p)"
+            class="px-4 py-2 rounded-lg text-xs font-bold transition-colors"
+            [class]="page() === p ? 'bg-primary text-white' : 'hover:bg-white text-secondary'"
+          >
+            {{ p }}
+          </button>
+        }
+        <button
+          (click)="nextPage()"
+          [disabled]="page() >= (result()?.totalPages ?? 1)"
+          class="p-2 hover:bg-white rounded-lg transition-colors disabled:opacity-40"
+        >
+          <span class="material-symbols-outlined">chevron_right</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
