@@ -1,0 +1,160 @@
+<!-- ============================================================
+     HWstore Footer — 4-column editorial layout
+     ============================================================ -->
+<footer class="bg-surface-container-low w-full mt-20">
+  <!-- Main grid -->
+  <div class="flex flex-col md:flex-row justify-between px-8 py-16 max-w-7xl mx-auto">
+    <!-- Brand column -->
+    <div class="space-y-6 w-xl">
+      <a routerLink="/" class="text-xl font-black text-secondary flex items-center gap-2">
+        <img src="/logo/hw_logo.png" alt="HWstore" class="h-6 w-auto" />
+        <span>HWstore</span>
+      </a>
+      <p class="text-secondary leading-relaxed text-sm">
+        Votre partenaire de confiance pour des solutions informatiques de haute précision en
+        Algérie. Matériel premium pour performances extrêmes.
+      </p>
+      <!-- Social icons -->
+      <div class="flex gap-3">
+        @for (social of socials; track social.label) {
+          <a
+            [href]="social.href"
+            target="_blank"
+            rel="noopener noreferrer"
+            [attr.aria-label]="social.label"
+            class="w-10 h-10 rounded-full border border-outline-variant/20 flex items-center justify-center text-secondary hover:text-primary hover:border-primary transition-colors"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              class="w-4 h-4 fill-current"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path [attr.d]="social.path" />
+            </svg>
+          </a>
+        }
+      </div>
+    </div>
+
+    <!-- Navigation column -->
+    <!-- <div>
+      <h4 class="font-bold text-on-background mb-8 uppercase tracking-widest text-xs">
+        Navigation
+      </h4>
+      <ul class="space-y-4">
+        <li>
+          <a routerLink="/" class="text-secondary hover:text-primary transition-colors text-sm"
+            >Accueil</a
+          >
+        </li>
+        <li>
+          <a
+            routerLink="/categories"
+            class="text-secondary hover:text-primary transition-colors text-sm"
+            >Catégories</a
+          >
+        </li>
+        <li>
+          <a
+            routerLink="/configurateur-pc"
+            class="text-secondary hover:text-primary transition-colors text-sm"
+            >Configurateur PC</a
+          >
+        </li>
+        <li>
+          <a
+            routerLink="/contact"
+            class="text-secondary hover:text-primary transition-colors text-sm"
+            >Contact</a
+          >
+        </li>
+        <li>
+          <a
+            routerLink="/commandes"
+            class="text-secondary hover:text-primary transition-colors text-sm"
+            >Commandes</a
+          >
+        </li>
+      </ul>
+    </div> -->
+
+    <!-- Support column -->
+    <!-- <div>
+      <h4 class="font-bold text-on-background mb-8 uppercase tracking-widest text-xs">Support</h4>
+      <ul class="space-y-4">
+        <li>
+          <a href="#" class="text-secondary hover:text-primary transition-colors text-sm"
+            >Support Technique</a
+          >
+        </li>
+        <li>
+          <a href="#" class="text-secondary hover:text-primary transition-colors text-sm">FAQ</a>
+        </li>
+        <li>
+          <a href="#" class="text-secondary hover:text-primary transition-colors text-sm"
+            >Suivi de commande</a
+          >
+        </li>
+        <li>
+          <a href="#" class="text-secondary hover:text-primary transition-colors text-sm"
+            >Retours & Garanties</a
+          >
+        </li>
+        <li>
+          <a href="#" class="text-secondary hover:text-primary transition-colors text-sm"
+            >Conditions Générales</a
+          >
+        </li>
+      </ul>
+    </div> -->
+
+    <!-- Contact column -->
+    <div>
+      <h4 class="font-bold text-on-background mb-8 uppercase tracking-widest text-xs">Contact</h4>
+      <ul class="space-y-4 text-sm text-secondary">
+        <li class="flex items-start gap-3">
+          <span class="material-symbols-outlined text-primary text-lg mt-0.5">location_on</span>
+          <span>39 avenue ziar abdelader-Bologhine, Alger, Algérie, 16100</span>
+        </li>
+        <li class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-primary text-lg">call</span>
+          <a href="tel:+213553115692" class="hover:text-primary transition-colors"
+            >+213 553 11 56 92</a
+          >
+        </li>
+        <li class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-primary text-lg">mail</span>
+          <a href="mailto:hwstoredz@hotmail.com" class="hover:text-primary transition-colors"
+            >hwstoredz&#64;hotmail.com</a
+          >
+        </li>
+        <li class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-primary text-lg">schedule</span>
+          <span>Dim – Jeu : 13h – 18:30h</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="border-t border-outline-variant/10">
+    <div
+      class="max-w-7xl mx-auto px-8 py-8 flex flex-col md:flex-row justify-between items-center gap-4"
+    >
+      <p class="text-xs text-secondary">
+        © {{ currentYear }} HWstore. Précision architecturale dans les solutions informatiques.
+      </p>
+      <div class="text-xs text-balance">
+        Développé par
+        <a
+          href="https://www.facebook.com/sawech.developer.22/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-xs text-balance hover:text-primary transition-colors"
+        >
+          Sawech</a
+        >. Tous droits réservés
+      </div>
+    </div>
+  </div>
+</footer>

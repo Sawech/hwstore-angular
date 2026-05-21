@@ -11,10 +11,11 @@
         </h2>
       </div>
       <select
+        (change)="changeTime($any($event.target).value)"
         class="bg-surface-container-low border-none rounded-lg text-s font-semibold px-4 py-2 focus:ring-1 focus:ring-primary outline-none"
       >
-        <option>7 derniers jours</option>
-        <option>30 derniers jours</option>
+        <option value="week">7 derniers jours</option>
+        <option value="month">30 derniers jours</option>
       </select>
     </div>
   </section>
@@ -34,57 +35,73 @@
         >
           <span class="material-symbols-outlined">payments</span>
         </div>
-        <span class="text-tertiary font-bold text-xs flex items-center gap-1">
+        <!-- <span class="text-tertiary font-bold text-xs flex items-center gap-1">
           <span class="material-symbols-outlined text-sm">trending_up</span>
           +{{ stats()?.salesTrend ?? 0 }}%
-        </span>
+        </span> -->
       </div>
       <p class="text-secondary text-sm font-medium">Ventes Totales</p>
       <h3 class="text-2xl font-extrabold text-on-surface mt-1">
-        {{ formatPrice(stats()?.totalSales ?? 0) }}
+        {{ formatPrice(totalSales()) }}
       </h3>
     </div>
 
+    <!-- Sales -->
     <!-- Orders -->
-    <div class="bg-surface-container-lowest p-6 rounded-xl editorial-shadow group">
+    <div
+      class="bg-surface-container-lowest p-6 rounded-xl editorial-shadow relative overflow-hidden group"
+    >
+      <div
+        class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110"
+      ></div>
       <div class="flex items-center justify-between mb-4">
         <div
-          class="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary"
+          class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary"
         >
           <span class="material-symbols-outlined">shopping_bag</span>
         </div>
-        <span class="text-tertiary font-bold text-xs flex items-center gap-1">
+        <!-- <span class="text-tertiary font-bold text-xs flex items-center gap-1">
           <span class="material-symbols-outlined text-sm">trending_up</span>
           +{{ stats()?.ordersTrend ?? 0 }}%
-        </span>
+        </span> -->
       </div>
       <p class="text-secondary text-sm font-medium">Commandes</p>
       <h3 class="text-2xl font-extrabold text-on-surface mt-1">
-        {{ stats()?.totalOrders ?? '—' }}
+        {{ stats()?.totalCommandes ?? '—' }}
       </h3>
     </div>
 
     <!-- Users -->
-    <div class="bg-surface-container-lowest p-6 rounded-xl editorial-shadow group">
+    <div
+      class="bg-surface-container-lowest p-6 rounded-xl editorial-shadow relative overflow-hidden group"
+    >
+      <div
+        class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110"
+      ></div>
       <div class="flex items-center justify-between mb-4">
         <div
-          class="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary"
+          class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary"
         >
           <span class="material-symbols-outlined">group</span>
         </div>
-        <span class="text-error font-bold text-xs flex items-center gap-1">
+        <!-- <span class="text-error font-bold text-xs flex items-center gap-1">
           <span class="material-symbols-outlined text-sm">trending_down</span>
           {{ stats()?.usersTrend ?? 0 }}%
-        </span>
+        </span> -->
       </div>
       <p class="text-secondary text-sm font-medium">Utilisateurs</p>
       <h3 class="text-2xl font-extrabold text-on-surface mt-1">
-        {{ stats()?.totalUsers ?? 0 | number }}
+        {{ stats()?.users ?? 0 | number }}
       </h3>
     </div>
 
     <!-- Stock -->
-    <div class="bg-surface-container-lowest p-6 rounded-xl editorial-shadow group">
+    <div
+      class="bg-surface-container-lowest p-6 rounded-xl editorial-shadow relative overflow-hidden group"
+    >
+      <div
+        class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110"
+      ></div>
       <div class="flex items-center justify-between mb-4">
         <div
           class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary"
@@ -99,7 +116,7 @@
       </div>
       <p class="text-secondary text-sm font-medium">Articles en Stock</p>
       <h3 class="text-2xl font-extrabold text-on-surface mt-1">
-        {{ stats()?.totalStock ?? 0 | number }}
+        {{ stats()?.composants ?? 0 | number }}
       </h3>
     </div>
   </section>
@@ -129,6 +146,10 @@
             >
               {{ bar.day }}
             </span>
+            <span
+              class="absolute -bottom-10 left-1/2 -translate-x-1/2 text-[10px] font-bold text-secondary"
+              >{{ bar.count }}</span
+            >
           </div>
         }
       </div>
@@ -154,47 +175,121 @@
             >progress_activity</span
           >
         </div>
-      } @else if (recentOrders().length === 0) {
+      } @else if (recentOrders()?.data?.length === 0) {
         <div class="py-16 text-center text-secondary">
           <span class="material-symbols-outlined text-4xl block mb-2">inbox</span>
           Aucune commande récente
         </div>
       } @else {
         <div class="overflow-x-auto">
-          <table class="w-full text-left">
+          <table class="w-full text-left border-collapse">
             <thead>
-              <tr
-                class="bg-surface-container-low text-secondary text-[10px] font-black uppercase tracking-widest"
-              >
-                <th class="px-8 py-4">ID Commande</th>
-                <th class="px-8 py-4">Client</th>
-                <th class="px-8 py-4">Date</th>
-                <th class="px-8 py-4">Statut</th>
-                <th class="px-8 py-4 text-right">Montant</th>
+              <tr class="bg-slate-50/50">
+                <th
+                  class="px-8 py-5 text-[10px] font-black text-secondary uppercase tracking-widest"
+                >
+                  ID Commande
+                </th>
+                <th
+                  class="px-8 py-5 text-[10px] font-black text-secondary uppercase tracking-widest"
+                >
+                  Date
+                </th>
+                <th
+                  class="px-8 py-5 text-[10px] font-black text-secondary uppercase tracking-widest"
+                >
+                  Client
+                </th>
+                <th
+                  class="px-8 py-5 text-[10px] font-black text-secondary uppercase tracking-widest"
+                >
+                  Montant
+                </th>
+                <th
+                  class="px-8 py-5 text-[10px] font-black text-secondary uppercase tracking-widest"
+                >
+                  Statut
+                </th>
+                <th
+                  class="px-8 py-5 text-[10px] font-black text-secondary uppercase tracking-widest text-right"
+                >
+                  Actions
+                </th>
               </tr>
             </thead>
-            <tbody class="text-sm divide-y divide-surface-container-low">
-              @for (order of recentOrders(); track order.id) {
-                <tr class="hover:bg-surface-container-low/50 transition-colors">
-                  <td class="px-8 py-5 font-mono text-secondary">#{{ order.sessionToken }}</td>
-                  <td class="px-8 py-5 font-bold">{{ order.user.firstName }}</td>
-                  <td class="px-8 py-5 text-secondary">
-                    {{ order.createdAt | date: 'd MMM, HH:mm' }}
+            <tbody class="divide-y divide-slate-50">
+              @for (order of pagedOrders(); track order.id) {
+                <tr class="hover:bg-slate-50/50 transition-colors group">
+                  <td class="px-8 py-6">
+                    <span class="font-mono text-sm font-bold text-primary"
+                      >#{{ order.orderRef }}</span
+                    >
                   </td>
-                  <td class="px-8 py-5">
+                  <td class="px-8 py-6 text-sm text-secondary">
+                    {{ order.createdAt | date: 'd MMM yyyy' }}
+                  </td>
+                  <td class="px-8 py-6">
+                    <div class="flex items-center gap-3">
+                      <!-- <div
+                        class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold text-xs"
+                      >
+                        {{ getInitials(order.user.firstName + ' ' + order.user.lastName) }}
+                      </div> -->
+                      <!-- Client column -->
+                      <span class="font-medium text-on-surface">
+                        {{ order.user ? order.user.email : '—' }}
+                      </span>
+                    </div>
+                  </td>
+                  <td class="px-8 py-6 font-bold text-on-surface">{{ formatCartPrice(order) }}</td>
+                  <td class="px-8 py-6">
                     <span
-                      class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold"
-                      [ngClass]="getStatusClass(order.status)"
+                      class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
+                      [ngClass]="getStatusClass(toLabel(order.status))"
                     >
                       <span
                         class="w-1.5 h-1.5 rounded-full mr-2"
-                        [ngClass]="getStatusDot(order.status)"
+                        [ngClass]="getStatusDot(toLabel(order.status))"
                       ></span>
-                      {{ order.status }}
+                      {{ toLabel(order.status) }}
                     </span>
                   </td>
-                  <td class="px-8 py-5 text-right font-bold">
-                    {{ formatCartPrice(order) }}
+                  <td class="px-8 py-6 text-right">
+                    <div
+                      class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <button
+                        class="p-2 hover:text-primary transition-colors text-secondary"
+                        title="Voir"
+                      >
+                        <span class="material-symbols-outlined text-xl">visibility</span>
+                      </button>
+                      <div class="relative">
+                        <button
+                          class="p-2 hover:text-primary transition-colors text-secondary"
+                          (click)="toggleStatusMenu(order.id)"
+                          title="Modifier le statut"
+                        >
+                          <span class="material-symbols-outlined text-xl">edit</span>
+                        </button>
+                        @if (activeStatusMenu() === order.id) {
+                          <div
+                            class="absolute right-0 top-full mt-1 bg-white rounded-xl shadow-xl z-10 py-2 w-44 editorial-shadow"
+                          >
+                            @for (s of editableStatuses; track s) {
+                              <button
+                                type="button"
+                                (click)="updateStatus(order.id, s)"
+                                class="w-full text-left px-4 py-2 text-sm hover:bg-surface-container-low transition-colors font-medium"
+                                [class.text-primary]="toLabel(order.status) === s"
+                              >
+                                {{ s }}
+                              </button>
+                            }
+                          </div>
+                        }
+                      </div>
+                    </div>
                   </td>
                 </tr>
               }

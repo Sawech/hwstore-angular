@@ -24,7 +24,7 @@ export class AdminCategoriesComponent implements OnInit {
 
   totalSubcategory = () =>
     this.categories().reduce((sum, c) => sum + (c.subcategory?.length ?? 0), 0);
-  totalProducts = () => this.categories().reduce((sum, c) => sum + (c.productCount ?? 0), 0);
+  totalComposants = () => this.categories().reduce((sum, c) => sum + (c.composantCount ?? 0), 0);
 
   categoryForm = this.fb.group({
     name: ['', Validators.required],

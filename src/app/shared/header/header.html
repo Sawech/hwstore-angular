@@ -1,0 +1,374 @@
+<!-- ============================================================
+     HWstore Header — Glassmorphism sticky nav
+     ============================================================ -->
+<nav
+  class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md shadow-[0px_20px_40px_rgba(15,23,42,0.06)]"
+>
+  <div class="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
+    <!-- Brand + Desktop Nav -->
+    <div class="flex items-center gap-12">
+      <!-- Logo -->
+      <a routerLink="/" class="flex items-center gap-2" (click)="closeMobileMenu()">
+        <img src="/logo/hw_logo_nobg.png" alt="HWstore Logo" class="h-11 w-auto" />
+        <span class="sr-only">HWstore</span>
+      </a>
+
+      <!-- Desktop navigation links -->
+      <div class="hidden lg:flex items-center gap-6">
+        @for (link of navLinks; track link.path + link.label) {
+          <!-- Replace the Catégories nav link inside the @for loop with this -->
+          @if (link.label === 'Catégories') {
+            <div
+              class="relative"
+              (mouseenter)="openCategoryMenu()"
+              (mouseleave)="closeCategoryMenuDelayed()"
+            >
+              <!-- Trigger link — takes on the same hover bg as the dropdown items -->
+              <a
+                [routerLink]="link.path"
+                routerLinkActive
+                #rla="routerLinkActive"
+                [routerLinkActiveOptions]="{ exact: false }"
+                class="flex items-center gap-1 text-sm font-medium tracking-tight transition-all duration-150 px-2.5 py-1.5 rounded-lg"
+                [ngClass]="
+                  isCategoryMenuOpen()
+                    ? 'text-primary bg-slate-100'
+                    : rla.isActive
+                      ? 'text-primary font-bold '
+                      : 'text-secondary hover:text-primary hover:bg-slate-100'
+                "
+              >
+                {{ link.label }}
+                <span
+                  class="material-symbols-outlined text-[14px] transition-transform duration-200"
+                  [class.rotate-180]="isCategoryMenuOpen()"
+                >
+                  expand_more
+                </span>
+              </a>
+
+              @if (isCategoryMenuOpen() && categories().length > 0) {
+                <div
+                  class="absolute left-0 top-[calc(100%+6px)] w-52 bg-white backdrop-blur-md rounded-xl shadow-[0_8px_24px_rgba(15,23,42,0.10)] border border-slate-200/60 overflow-hidden origin-top-left animate-[fadeIn_0.15s_ease-out] z-50"
+                  (mouseenter)="openCategoryMenu()"
+                  (mouseleave)="closeCategoryMenuDelayed()"
+                >
+                  <div class="p-1.5">
+                    @for (category of categories(); track category.id) {
+                      <a
+                        [routerLink]="['/categories', category.id]"
+                        class="flex items-center gap-2.5 px-2.5 py-2 text-sm text-on-surface hover:bg-slate-100/80 hover:text-primary transition-colors rounded-lg"
+                        (click)="isCategoryMenuOpen.set(false)"
+                      >
+                        <span class="material-symbols-outlined text-[15px] opacity-50">memory</span>
+                        {{ category.name }}
+                      </a>
+                    }
+                    @if (categories().length > 6) {
+                      <div class="border-t border-slate-200/60 mt-1 pt-1">
+                        <a
+                          routerLink="/categories"
+                          (click)="isCategoryMenuOpen.set(false)"
+                          class="flex items-center gap-2.5 px-2.5 py-2 text-sm text-primary font-medium hover:bg-slate-100/80 transition-colors rounded-lg"
+                        >
+                          <span class="material-symbols-outlined text-[15px]">grid_view</span>
+                          Voir tout
+                        </a>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <a
+              [routerLink]="link.path"
+              routerLinkActive
+              #rla="routerLinkActive"
+              [routerLinkActiveOptions]="{ exact: link.path === '/' }"
+              [ngClass]="
+                rla.isActive
+                  ? 'text-primary font-bold '
+                  : 'text-secondary hover:text-primary hover:bg-slate-100/80'
+              "
+              class="transition-all duration-150 font-medium tracking-tight text-sm px-2.5 py-1.5 rounded-lg"
+            >
+              {{ link.label }}
+            </a>
+          }
+        }
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="flex items-center gap-4">
+      <!-- Search -->
+      <button
+        class="p-2 text-secondary hover:text-primary transition-all duration-300 rounded-lg hover:bg-surface-container-low"
+        aria-label="Rechercher"
+      >
+        <span class="material-symbols-outlined">search</span>
+      </button>
+
+      <!-- Cart with hover preview -->
+      <div
+        class="relative"
+        (mouseenter)="openCartPreview()"
+        (mouseleave)="closeCartPreviewDelayed()"
+      >
+        <a
+          routerLink="/panier"
+          class="p-2 transition-all duration-150 relative rounded-lg flex items-center"
+          [ngClass]="
+            isCartPreviewOpen()
+              ? 'text-primary bg-slate-100'
+              : 'text-secondary hover:text-primary hover:bg-slate-100'
+          "
+          aria-label="Panier"
+        >
+          <span class="material-symbols-outlined">shopping_cart</span>
+          @if (cartCount() > 0) {
+            <span
+              class="absolute top-1 right-1 bg-primary text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold leading-none"
+            >
+              {{ cartCount() > 99 ? '99+' : cartCount() }}
+            </span>
+          }
+        </a>
+
+        @if (isCartPreviewOpen()) {
+          <div
+            class="absolute right-0 top-[calc(100%+6px)] w-72 bg-white backdrop-blur-md rounded-xl shadow-[0_8px_24px_rgba(15,23,42,0.10)] border border-slate-200/60 origin-top-right animate-[fadeIn_0.15s_ease-out] z-50"
+            (mouseenter)="openCartPreview()"
+            (mouseleave)="closeCartPreviewDelayed()"
+          >
+            @if (cartItems().length === 0) {
+              <div class="flex flex-col items-center justify-center py-8 px-4 gap-2">
+                <span class="material-symbols-outlined text-[32px] text-secondary opacity-40"
+                  >shopping_cart</span
+                >
+                <p class="text-sm text-secondary">Votre panier est vide</p>
+              </div>
+            } @else {
+              <div class="p-1.5 flex flex-col gap-0.5">
+                @for (item of cartItems().slice(0, 3); track item.composant.id) {
+                  <a
+                    routerLink="/panier"
+                    class="flex items-center gap-3 px-2.5 py-2 rounded-lg hover:bg-slate-100/80 transition-colors"
+                  >
+                    <img
+                      [src]="item.composant.images[0]"
+                      [alt]="item.composant.name"
+                      class="w-10 h-10 rounded-lg object-cover flex-shrink-0 bg-slate-100"
+                    />
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm text-on-surface font-medium leading-snug line-clamp-2">
+                        {{ item.composant.name }}
+                      </p>
+                      <p class="text-xs text-secondary mt-0.5">x{{ item.quantity }}</p>
+                    </div>
+                    <p class="text-sm font-semibold text-primary flex-shrink-0">
+                      {{ item.composant.price * item.quantity | number: '1.2-2' }} DA
+                    </p>
+                  </a>
+                }
+                @if (cartItems().length > 3) {
+                  <p class="text-xs text-secondary text-center py-1.5">
+                    + {{ cartItems().length - 3 }} autre(s) article(s)
+                  </p>
+                }
+              </div>
+              <div class="border-t border-slate-200/60 mx-2 mb-1.5">
+                <a
+                  routerLink="/panier"
+                  class="flex items-center justify-center gap-2 mx-[-8px] mt-1.5 px-3 py-2 text-sm font-medium text-primary hover:bg-slate-100/80 transition-colors rounded-lg"
+                >
+                  Voir le panier
+                  <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+                </a>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Account dropdown -->
+      <div id="account-menu-wrapper" class="relative">
+        <button
+          (click)="toggleAccountMenu()"
+          class="p-2 transition-all duration-300 rounded-lg hover:bg-surface-container-low flex items-center gap-1.5"
+          [class.text-primary]="authService.isAuthenticated()"
+          [class.text-secondary]="!authService.isAuthenticated()"
+          [class.hover:text-primary]="!authService.isAuthenticated()"
+          aria-label="Mon compte"
+          aria-haspopup="true"
+          [attr.aria-expanded]="isAccountMenuOpen()"
+        >
+          @if (authService.isAuthenticated()) {
+            <!-- Logged-in: show initials avatar -->
+            <div
+              class="w-7 h-7 rounded-lg bg-gradient-to-br from-primary to-primary-container flex items-center justify-center"
+            >
+              <span class="text-white text-[11px] font-bold leading-none">
+                {{ authService.currentUser()?.firstName?.charAt(0)?.toUpperCase()
+                }}{{ authService.currentUser()?.lastName?.charAt(0)?.toUpperCase() }}
+              </span>
+            </div>
+          } @else {
+            <!-- Logged-out: standard icon -->
+            <span class="material-symbols-outlined">account_circle</span>
+          }
+        </button>
+
+        <!-- Dropdown panel -->
+        @if (isAccountMenuOpen()) {
+          <div
+            class="absolute right-0 mt-2 w-52 bg-surface-container-lowest rounded-xl shadow-[0_20px_40px_rgba(15,23,42,0.12)] border border-outline-variant/10 overflow-hidden origin-top-right animate-[fadeIn_0.15s_ease-out]"
+          >
+            @if (authService.isAuthenticated()) {
+              <!-- Authenticated menu -->
+
+              <!-- User info header -->
+              <div class="px-4 py-3 border-b border-outline-variant/10 bg-surface-container-low">
+                <p class="text-xs font-bold text-on-surface truncate">
+                  {{ authService.currentUser()?.firstName }}
+                  {{ authService.currentUser()?.lastName }}
+                </p>
+                <p class="text-[11px] text-secondary truncate mt-0.5">
+                  {{ authService.currentUser()?.email }}
+                </p>
+              </div>
+
+              <!-- Menu items -->
+              <div class="py-1.5">
+                <a
+                  routerLink="/compte"
+                  (click)="closeAccountMenu()"
+                  class="flex items-center gap-3 px-4 py-2.5 text-sm text-on-surface hover:bg-surface-container-low hover:text-primary transition-colors"
+                >
+                  <span
+                    class="material-symbols-outlined text-[18px]"
+                    style="font-variation-settings: 'FILL' 1"
+                    >person</span
+                  >
+                  Mon compte
+                </a>
+                <a
+                  routerLink="/compte/parametres"
+                  (click)="closeAccountMenu()"
+                  class="flex items-center gap-3 px-4 py-2.5 text-sm text-on-surface hover:bg-surface-container-low hover:text-primary transition-colors"
+                >
+                  <span class="material-symbols-outlined text-[18px]">settings</span>
+                  Paramètres
+                </a>
+              </div>
+
+              <!-- Logout -->
+              <div class="border-t border-outline-variant/10 py-1.5">
+                <button
+                  (click)="logout()"
+                  class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-error hover:bg-error/5 transition-colors"
+                >
+                  <span class="material-symbols-outlined text-[18px]">logout</span>
+                  Se déconnecter
+                </button>
+              </div>
+            } @else {
+              <!-- Guest menu -->
+              <div class="py-1.5">
+                <a
+                  routerLink="/login"
+                  (click)="closeAccountMenu()"
+                  class="flex items-center gap-3 px-4 py-2.5 text-sm text-on-surface hover:bg-surface-container-low hover:text-primary transition-colors font-medium"
+                >
+                  <span class="material-symbols-outlined text-[18px]">login</span>
+                  Se connecter
+                </a>
+                <a
+                  routerLink="/register"
+                  (click)="closeAccountMenu()"
+                  class="flex items-center gap-3 px-4 py-2.5 text-sm text-on-surface hover:bg-surface-container-low hover:text-primary transition-colors"
+                >
+                  <span class="material-symbols-outlined text-[18px]">person_add</span>
+                  Créer un compte
+                </a>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Mobile hamburger -->
+      <button
+        class="lg:hidden p-2 text-secondary hover:text-primary transition-all duration-300 rounded-lg"
+        (click)="toggleMobileMenu()"
+        aria-label="Menu"
+      >
+        <span class="material-symbols-outlined">
+          {{ isMobileMenuOpen() ? 'close' : 'menu' }}
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Drawer -->
+  @if (isMobileMenuOpen()) {
+    <div class="lg:hidden border-t border-outline-variant/10 bg-white/95 backdrop-blur-md">
+      <div class="max-w-7xl mx-auto px-8 py-6 flex flex-col gap-4">
+        @for (link of navLinks; track link.path + link.label) {
+          <a
+            [routerLink]="link.path"
+            routerLinkActive="text-primary font-bold"
+            [routerLinkActiveOptions]="{ exact: link.path === '/' }"
+            class="text-secondary hover:text-primary transition-colors font-medium py-2 text-sm"
+            (click)="closeMobileMenu()"
+          >
+            {{ link.label }}
+          </a>
+        }
+
+        <!-- Mobile auth links -->
+        <div class="border-t border-outline-variant/10 pt-4 mt-2 flex flex-col gap-3">
+          @if (authService.isAuthenticated()) {
+            <a
+              routerLink="/compte"
+              (click)="closeMobileMenu()"
+              class="flex items-center gap-3 text-sm text-on-surface hover:text-primary transition-colors font-medium py-1"
+            >
+              <span
+                class="material-symbols-outlined text-[18px]"
+                style="font-variation-settings: 'FILL' 1"
+                >person</span
+              >
+              Mon compte
+            </a>
+            <button
+              (click)="logout(); closeMobileMenu()"
+              class="flex items-center gap-3 text-sm text-error transition-colors py-1"
+            >
+              <span class="material-symbols-outlined text-[18px]">logout</span>
+              Se déconnecter
+            </button>
+          } @else {
+            <a
+              routerLink="/login"
+              (click)="closeMobileMenu()"
+              class="flex items-center gap-3 text-sm text-on-surface hover:text-primary transition-colors font-medium py-1"
+            >
+              <span class="material-symbols-outlined text-[18px]">login</span>
+              Se connecter
+            </a>
+            <a
+              routerLink="/register"
+              (click)="closeMobileMenu()"
+              class="flex items-center gap-3 text-sm text-on-surface hover:text-primary transition-colors py-1"
+            >
+              <span class="material-symbols-outlined text-[18px]">person_add</span>
+              Créer un compte
+            </a>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</nav>

@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 import { AppConfig } from '../../core/config/app-config';
 import {
   AdminCategory,
-  AdminComponent,
-  AdminComponentPayload,
+  AdminComposant,
+  AdminComposantPayload,
   AdminCart,
   AdminSubCategory,
   AdminSubCategoryPayload,
@@ -67,38 +67,38 @@ export class AdminApiService {
     return this.http.delete<{ message: string }>(`${this.base}/subcategory/${id}`);
   }
 
-  getComponents(params?: Record<string, any>): Observable<PaginatedResponse<AdminComponent>> {
+  getComposants(params?: Record<string, any>): Observable<PaginatedResponse<AdminComposant>> {
     let httpParams = new HttpParams();
     if (params)
       Object.entries(params).forEach(([k, v]) => {
         if (v != null && v !== '') httpParams = httpParams.set(k, String(v));
       });
-    return this.http.get<PaginatedResponse<AdminComponent>>(`${this.base}/components`, {
+    return this.http.get<PaginatedResponse<AdminComposant>>(`${this.base}/composants`, {
       params: httpParams,
     });
   }
-  getComponentById(id: string): Observable<AdminComponent> {
-    return this.http.get<AdminComponent>(`${this.base}/components/${id}`);
+  getComposantById(id: string): Observable<AdminComposant> {
+    return this.http.get<AdminComposant>(`${this.base}/composants/${id}`);
   }
 
-  createComponent(data: Partial<AdminComponentPayload>): Observable<AdminComponentPayload> {
-    return this.http.post<AdminComponentPayload>(`${this.base}/components`, data);
+  createComposant(data: Partial<AdminComposantPayload>): Observable<AdminComposantPayload> {
+    return this.http.post<AdminComposantPayload>(`${this.base}/composants`, data);
   }
 
-  updateComponent(
+  updateComposant(
     id: string,
-    data: Partial<AdminComponentPayload>,
-  ): Observable<AdminComponentPayload> {
-    return this.http.put<AdminComponentPayload>(`${this.base}/components/${id}`, data);
+    data: Partial<AdminComposantPayload>,
+  ): Observable<AdminComposantPayload> {
+    return this.http.put<AdminComposantPayload>(`${this.base}/composants/${id}`, data);
   }
   uploadImage(formData: FormData): Observable<{ url: string; publicId: string }> {
     return this.http.post<{ url: string; publicId: string }>(
-      `${this.base}/components/uploadImage`,
+      `${this.base}/composants/uploadImage`,
       formData,
     );
   }
-  deleteComponent(id: string): Observable<{ message: string }> {
-    return this.http.delete<{ message: string }>(`${this.base}/components/${id}`);
+  deleteComposant(id: string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.base}/composants/${id}`);
   }
 
   getOrders(params?: Record<string, any>): Observable<PaginatedResponse<AdminCart>> {

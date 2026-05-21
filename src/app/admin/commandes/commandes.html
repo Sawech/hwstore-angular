@@ -40,7 +40,7 @@
     </div>
     <div class="bg-surface-container-low p-6 rounded-xl">
       <label class="block text-[10px] font-bold text-secondary uppercase tracking-widest mb-3"
-        >Période</label
+        >Jour</label
       >
       <input
         type="date"
@@ -171,10 +171,10 @@
     </div>
 
     <div
-      class="px-8 py-4 bg-slate-50/30 flex items-center justify-between"
+      class="px-8 py-4 bg-slate-50/30 flex items-center justify-end"
       style="border-top: 1px solid #f8f8f8"
     >
-      <span class="text-xs text-secondary font-medium"> {{ result()?.total ?? 0 }} commandes </span>
+      <!-- <span class="text-xs text-secondary font-medium"> {{ result()?.total ?? 0 }} commandes </span> -->
       <div class="flex gap-2">
         <button
           (click)="prevPage()"

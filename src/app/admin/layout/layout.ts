@@ -2,7 +2,7 @@ import { Component, inject, signal, computed } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AdminAuthService } from '../core/admin-auth.service';
-import { ToastComponent } from '../shared/toast/toast.component';
+import { AdminToastComponent } from '../shared/toast/toast';
 
 interface NavItem {
   icon: string;
@@ -13,7 +13,7 @@ interface NavItem {
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, ToastComponent],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, AdminToastComponent],
   templateUrl: './layout.html',
 })
 export class AdminLayoutComponent {

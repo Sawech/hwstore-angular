@@ -245,6 +245,22 @@
             <div>
               <label
                 class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2"
+                >Type</label
+              >
+              <select
+                formControlName="type"
+                class="w-full bg-surface border-0 rounded-lg p-4 text-sm font-medium focus:ring-2 focus:ring-primary/20"
+              >
+                @for (type of types(); track type) {
+                  <option [value]="type" [defaultSelected]="'other'">
+                    {{ type }}
+                  </option>
+                }
+              </select>
+            </div>
+            <div>
+              <label
+                class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2"
                 >Catégorie principale *</label
               >
               <select
@@ -265,7 +281,7 @@
             <div>
               <label
                 class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2"
-                >Sous-catégorie</label
+                >Sous-catégorie *</label
               >
               <select
                 formControlName="subcategory_id"

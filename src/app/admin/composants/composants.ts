@@ -4,7 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AdminApiService } from '../core/admin-api.service';
 import { ToastService } from '../core/toast.service';
-import { AdminComponent, AdminSubCategory, PaginatedResponse } from '../core/admin.model';
+import { AdminComposant, AdminSubCategory, PaginatedResponse } from '../core/admin.model';
 
 @Component({
   selector: 'app-admin-composants',
@@ -17,7 +17,7 @@ export class AdminComposantsComponent implements OnInit {
   private toast = inject(ToastService);
   private router = inject(Router);
 
-  result = signal<PaginatedResponse<AdminComponent> | null>(null);
+  result = signal<PaginatedResponse<AdminComposant> | null>(null);
   loading = signal(true);
   page = signal(1);
   searchQuery = signal('');
@@ -37,7 +37,7 @@ export class AdminComposantsComponent implements OnInit {
   loadData(): void {
     this.loading.set(true);
     this.api
-      .getComponents({
+      .getComposants({
         page: this.page(),
         limit: 10,
         search: this.searchQuery(),
@@ -45,7 +45,7 @@ export class AdminComposantsComponent implements OnInit {
       })
       .subscribe({
         next: (res) => {
-          console.log('Component response:', res);
+          console.log('Composant response:', res);
           this.result.set(res);
           this.stats[0].value = String(res.total);
           const cats = res.data
@@ -96,9 +96,9 @@ export class AdminComposantsComponent implements OnInit {
     this.router.navigate(['/admin/composants/new']);
   }
 
-  deleteComponent(id: string): void {
+  deleteComposant(id: string): void {
     if (!confirm('Supprimer ce composant ?')) return;
-    this.api.deleteComponent(id).subscribe({
+    this.api.deleteComposant(id).subscribe({
       next: () => {
         this.toast.success('Composant supprimé');
         this.loadData();

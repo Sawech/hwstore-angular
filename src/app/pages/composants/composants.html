@@ -1,6 +1,6 @@
 <!-- ============================================================
      HWstore Category Page — Ordinateurs Portables
-     Layout: sticky sidebar + main product grid
+     Layout: sticky sidebar + main composant grid
      ============================================================ -->
 
 <div class="pt-20 min-h-screen max-w-[1920px] mx-auto flex flex-col md:flex-row">
@@ -37,17 +37,41 @@
     <!-- Price range filter -->
     <div class="space-y-4 mb-6">
       <h3 class="text-slate-900 font-bold text-xs uppercase tracking-widest">Prix (DA)</h3>
-      <input
-        type="range"
-        min="100000"
-        max="900000"
-        step="10000"
-        [value]="priceMax()"
-        (input)="onPriceChange(+$any($event.target).value)"
-        class="w-full h-1 bg-surface-container-high rounded-full appearance-none"
-      />
+
+      <div class="relative h-6 flex items-center">
+        <!-- Track background -->
+        <div class="absolute w-full h-1 bg-surface-container-high rounded-full"></div>
+        <!-- Active track fill -->
+        <div
+          class="absolute h-1 bg-primary rounded-full"
+          [style.left.%]="minPercent()"
+          [style.right.%]="100 - maxPercent()"
+        ></div>
+
+        <!-- Min handle -->
+        <input
+          type="range"
+          min="0"
+          max="900000"
+          step="10000"
+          [value]="priceMin()"
+          (input)="onPriceMinChange(+$any($event.target).value)"
+          class="range-thumb absolute w-full appearance-none bg-transparent pointer-events-none"
+        />
+        <!-- Max handle -->
+        <input
+          type="range"
+          min="0"
+          max="900000"
+          step="10000"
+          [value]="priceMax()"
+          (input)="onPriceChange(+$any($event.target).value)"
+          class="range-thumb absolute w-full appearance-none bg-transparent pointer-events-none"
+        />
+      </div>
+
       <div class="flex justify-between text-[10px] text-slate-400">
-        <span>100 000 DA</span>
+        <span class="text-primary font-bold">{{ formatPrice(priceMin()) }}</span>
         <span class="text-primary font-bold">{{ formatPrice(priceMax()) }}</span>
       </div>
     </div>
@@ -73,6 +97,7 @@
             <span class="text-primary">{{ currentSousCategory()?.name }}</span>
             <!-- Ordinateurs <br /><span class="text-primary">Portables</span> -->
           </h1>
+          {{ currentSousCategory()?.description }}
         </div>
 
         <!-- Sort selector -->
@@ -95,14 +120,14 @@
 
       <!-- Result count -->
       <!-- <p class="mt-4 text-sm text-slate-400">
-        {{ filteredProducts().length }} produit{{
-          filteredProducts().length > 1 ? 's' : ''
+        {{ filteredComposants().length }} composant{{
+          filteredComposants().length > 1 ? 's' : ''
         }}
-        trouvé{{ filteredProducts().length > 1 ? 's' : '' }}
+        trouvé{{ filteredComposants().length > 1 ? 's' : '' }}
       </p> -->
     </div>
 
-    <!-- Product Grid -->
+    <!-- Composant Grid -->
     @if (isLoading()) {
       <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
         @for (i of [1, 2, 3, 4, 5, 6]; track i) {
@@ -116,10 +141,10 @@
           </div>
         }
       </div>
-    } @else if (pagedProducts().length === 0) {
+    } @else if (pagedComposants().length === 0) {
       <div class="flex flex-col items-center justify-center h-64 text-center">
         <span class="material-symbols-outlined text-5xl text-slate-300 mb-4">search_off</span>
-        <p class="text-xl font-bold text-slate-400">Aucun produit trouvé</p>
+        <p class="text-xl font-bold text-slate-400">Aucun composant trouvé</p>
         <p class="text-slate-400 mt-2">Essayez de modifier vos filtres</p>
         <button
           (click)="resetFilters()"
@@ -130,8 +155,8 @@
       </div>
     } @else {
       <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8">
-        @for (product of pagedProducts(); track product.id) {
-          <app-product-card [product]="product" variant="list" />
+        @for (composant of pagedComposants(); track composant.id) {
+          <app-composant-card [composant]="composant" variant="list" />
         }
       </div>
 

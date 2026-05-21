@@ -1,6 +1,6 @@
 <!-- ============================================================
      HWstore Category Page — Ordinateurs Portables
-     Layout: sticky sidebar + main product grid
+     Layout: sticky sidebar + main composant grid
      ============================================================ -->
 
 <div class="pt-20 min-h-screen max-w-[1920px] mx-auto flex flex-col md:flex-row">
@@ -60,14 +60,13 @@
             Sous <br /><span class="text-primary">Catégories</span>
           </h1>
           <p class="text-secondary max-w-md leading-relaxed">
-            Découvrez notre sélection de stations de travail haute performance et de laptops gaming
-            de nouvelle génération.
+            {{ selectedCategory()?.description }}
           </p>
         </div>
       </div>
     </div>
 
-    <!-- Product Grid -->
+    <!-- Composant Grid -->
     @if (isLoading()) {
       <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
         @for (i of [1, 2, 3, 4, 5, 6]; track i) {
@@ -94,7 +93,7 @@
           <div
             class="group relative overflow-hidden rounded-xl bg-surface-container-lowest hover:shadow-2xl transition-all duration-500 flex flex-col"
             style="border: 1px solid rgba(221, 191, 196, 0.2)"
-            [routerLink]="['/sous-categories', sousCategory.id, 'produits']"
+            [routerLink]="['/sous-categories', sousCategory.id, 'composants']"
             [state]="{ sousCategory: sousCategory }"
           >
             <!-- Image -->
@@ -126,10 +125,10 @@
 
               <div class="flex items-center justify-between">
                 <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                  @if (sousCategory.productCount) {
-                    {{ sousCategory.productCount }} produits
+                  @if (sousCategory.composantCount) {
+                    {{ sousCategory.composantCount }} composants
                   } @else {
-                    0 produits
+                    0 composants
                   }
                 </span>
               </div>

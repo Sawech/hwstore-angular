@@ -5,8 +5,8 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { CartService } from '../../../core/services/cart.service';
-import { ProductService } from '../../../core/services/product.service';
-import { CartResponse, toLabel } from '../../../core/models/product.model';
+import { ClientService } from '../../../core/services/client.service';
+import { CartResponse, toLabel } from '../../../core/models/client.model';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -18,7 +18,7 @@ import { CommonModule } from '@angular/common';
 export class PaymentSuccessComponent implements OnInit {
   private readonly cartService = inject(CartService);
   private readonly route = inject(ActivatedRoute);
-  private readonly api = inject(ProductService);
+  private readonly api = inject(ClientService);
   readonly toLabel = toLabel;
 
   cart = signal<CartResponse | null>(null);

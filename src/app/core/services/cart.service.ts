@@ -3,45 +3,47 @@
  */
 
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { ProductPayload, Product } from '../models/product.model';
+import { ComposantPayload, Composant } from '../models/client.model';
 import { AuthService } from '../../features/auth/auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class CartService {
   private authService = inject(AuthService);
-  private _items = signal<ProductPayload[]>(this.loadFromStorage());
+  private _items = signal<ComposantPayload[]>(this.loadFromStorage());
 
   readonly items = this._items.asReadonly();
   readonly count = computed(() => this._items().reduce((sum, item) => sum + item.quantity, 0));
   readonly total = computed(() =>
-    this._items().reduce((sum, item) => sum + item.product.price * item.quantity, 0),
+    this._items().reduce((sum, item) => sum + item.composant.price * item.quantity, 0),
   );
 
-  addToCart(product: Product, quantity = 1): void {
+  addToCart(composant: Composant, quantity = 1): void {
     this._items.update((current) => {
-      const existing = current.find((item) => item.product.id === product.id);
+      const existing = current.find((item) => item.composant.id === composant.id);
       if (existing) {
         return current.map((item) =>
-          item.product.id === product.id ? { ...item, quantity: item.quantity + quantity } : item,
+          item.composant.id === composant.id
+            ? { ...item, quantity: item.quantity + quantity }
+            : item,
         );
       }
-      return [...current, { product, quantity }];
+      return [{ composant, quantity }, ...current];
     });
     this.saveToStorage();
   }
 
-  removeFromCart(productId: string): void {
-    this._items.update((current) => current.filter((item) => !(item.product.id === productId)));
+  removeFromCart(composantId: number): void {
+    this._items.update((current) => current.filter((item) => !(item.composant.id === composantId)));
     this.saveToStorage();
   }
 
-  updateQuantity(productId: string, quantity: number): void {
+  updateQuantity(composantId: number, quantity: number): void {
     if (quantity <= 0) {
-      this.removeFromCart(productId);
+      this.removeFromCart(composantId);
       return;
     }
     this._items.update((current) =>
-      current.map((item) => (item.product.id === productId ? { ...item, quantity } : item)),
+      current.map((item) => (item.composant.id === composantId ? { ...item, quantity } : item)),
     );
     this.saveToStorage();
   }
@@ -51,10 +53,10 @@ export class CartService {
     this.saveToStorage();
   }
 
-  private loadFromStorage(): ProductPayload[] {
+  private loadFromStorage(): ComposantPayload[] {
     try {
       const saved = localStorage.getItem(this.getStorageKey());
-      return saved ? (JSON.parse(saved) as ProductPayload[]) : [];
+      return saved ? (JSON.parse(saved) as ComposantPayload[]) : [];
     } catch {
       return [];
     }

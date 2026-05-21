@@ -5,9 +5,9 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ProductService } from '../../../core/services/product.service';
+import { ClientService } from '../../../core/services/client.service';
 import { AuthService } from '../../../features/auth/auth.service';
-import { CartOrder, CartMeta } from '../../../core/models/product.model';
+import { CartOrder } from '../../../core/models/client.model';
 
 @Component({
   selector: 'app-commandes',
@@ -16,7 +16,7 @@ import { CartOrder, CartMeta } from '../../../core/models/product.model';
   templateUrl: './commandes.html',
 })
 export class CommandesComponent implements OnInit {
-  private readonly productService = inject(ProductService);
+  private readonly clientService = inject(ClientService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
@@ -38,7 +38,7 @@ export class CommandesComponent implements OnInit {
     this.loading.set(true);
     this.error.set(null);
 
-    this.productService.getCarts(page, 8).subscribe({
+    this.clientService.getCarts(page, 8).subscribe({
       next: (res) => {
         console.log(res.data);
         this.carts.set(res.data);
@@ -60,13 +60,22 @@ export class CommandesComponent implements OnInit {
   }
 
   showBill(checkoutId: string) {
-    this.productService.getBill(checkoutId);
+    this.clientService.getBill(checkoutId);
   }
 
   prevPage(): void {
     if (this.currentPage() > 1) {
       this.loadCarts(this.currentPage() - 1);
     }
+  }
+
+  getStatusClass(status: string): Record<string, boolean> {
+    return {
+      'bg-tertiary-fixed text-on-tertiary-fixed': status === 'Livré',
+      'bg-orange-100 text-orange-800': status === 'En attente',
+      'bg-outline-variant text-outline opacity-75': status === 'Annulé',
+      'bg-secondary-container text-on-secondary-container': status === 'En cours',
+    };
   }
 
   getTotal(cart: CartOrder): number {
@@ -95,9 +104,23 @@ export class CommandesComponent implements OnInit {
     return map[status] ?? status;
   }
 
+  getStatusIcon(status: string): string {
+    const map: Record<string, string> = {
+      checked_out: 'check_circle',
+      active: 'clock_loader_20',
+      abandoned: 'close',
+      waiting: 'pause_circle',
+    };
+    return map[status] ?? status;
+  }
+
   getItemNames(cart: CartOrder): string {
-    const names = cart.items.slice(0, 2).map((i) => i.product?.name ?? 'Produit');
+    const names = cart.items.slice(0, 2).map((i) => i.composant?.name ?? 'Composant');
     const suffix = cart.items.length > 2 ? `...` : '';
     return names.join(', ') + suffix;
+  }
+
+  isDeleted(cart: CartOrder): boolean {
+    return cart.status === 'abandoned';
   }
 }

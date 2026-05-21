@@ -5,27 +5,28 @@ import { authGuard } from './features/auth/guards/auth.guard';
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./pages/home/home.component').then((m) => m.HomeComponent),
+    loadComponent: () => import('./pages/home/home').then((m) => m.HomeComponent),
     title: 'HWstore | Excellence en Solutions Informatiques',
   },
   {
     path: 'configurateur-pc',
     loadComponent: () =>
-      import('./pages/configurateur/configurateur.component').then((m) => m.ConfigurateurComponent),
+      import('./pages/configurateur/configurateur').then((m) => m.ConfigurateurComponent),
     title: 'Configurateur PC | HWstore',
   },
+  // {
+  //   path: 'builder',
+  //   loadChildren: () => import('./features/builder/builder.routes').then((m) => m.BUILDER_ROUTES),
+  // },
   {
-    path: 'produits/:id',
+    path: 'composants/:id',
     loadComponent: () =>
-      import('./pages/product-detail/product-detail.component').then(
-        (m) => m.ProductDetailComponent,
-      ),
-    title: 'Détail Produit | HWstore',
+      import('./pages/composant-detail/composant-detail').then((m) => m.ComposantDetailComponent),
+    title: 'Détail Composant | HWstore',
   },
   {
     path: 'categories',
-    loadComponent: () =>
-      import('./pages/categories/categories.component').then((m) => m.CategoriesComponent),
+    loadComponent: () => import('./pages/categories/categories').then((m) => m.CategoriesComponent),
     title: 'Nos Catégories | HWstore',
   },
   {
@@ -41,13 +42,13 @@ export const routes: Routes = [
     title: 'Sous Catégories | HWstore',
   },
   {
-    path: 'sous-categories/:subcategoryId/produits',
-    loadComponent: () => import('./pages/products/products').then((m) => m.ProductsComponent),
-    title: 'Produits | HWstore',
+    path: 'sous-categories/:subcategoryId/composants',
+    loadComponent: () => import('./pages/composants/composants').then((m) => m.ComposantsComponent),
+    title: 'Composants | HWstore',
   },
   {
     path: 'panier',
-    loadComponent: () => import('./pages/panier/panier.component').then((m) => m.PanierComponent),
+    loadComponent: () => import('./pages/panier/panier').then((m) => m.PanierComponent),
     title: 'Mon Panier | HWstore',
   },
 
@@ -62,20 +63,19 @@ export const routes: Routes = [
 
   {
     path: 'login',
-    loadComponent: () =>
-      import('./features/auth/login/login.component').then((m) => m.LoginComponent),
+    loadComponent: () => import('./features/auth/login/login').then((m) => m.LoginComponent),
     title: 'Se Connecter | HWstore',
   },
   {
     path: 'register',
     loadComponent: () =>
-      import('./features/auth/register/register.component').then((m) => m.RegisterComponent),
+      import('./features/auth/register/register').then((m) => m.RegisterComponent),
     title: 'Créer un Compte | HWstore',
   },
   {
     path: 'compte',
     loadComponent: () =>
-      import('./features/auth/compte/mon-compte.component').then((m) => m.MonCompteComponent),
+      import('./features/auth/compte/mon-compte').then((m) => m.MonCompteComponent),
     canActivate: [authGuard],
     title: 'Mon Compte | HWstore',
   },

@@ -5,8 +5,8 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { ProductService } from '../../core/services/product.service';
-import { Category, SubCategory } from '../../core/models/product.model';
+import { ClientService } from '../../core/services/client.service';
+import { Category, SubCategory } from '../../core/models/client.model';
 
 @Component({
   selector: 'app-sous-categories',
@@ -15,7 +15,7 @@ import { Category, SubCategory } from '../../core/models/product.model';
   templateUrl: './sous-categories.html',
 })
 export class SousCategoriesComponent implements OnInit {
-  private productService = inject(ProductService);
+  private clientService = inject(ClientService);
 
   allSousCategories = signal<SubCategory[]>([]);
   isLoading = signal(true);
@@ -47,7 +47,7 @@ export class SousCategoriesComponent implements OnInit {
   pageNumbers = computed(() => Array.from({ length: this.totalPages() }, (_, i) => i + 1));
 
   ngOnInit(): void {
-    this.productService.getCategories().subscribe({
+    this.clientService.getCategories().subscribe({
       next: (res) => {
         this.categories.set(res.data);
         const categorySlug = this.route.snapshot.paramMap.get('slug');
@@ -59,18 +59,18 @@ export class SousCategoriesComponent implements OnInit {
         }
       },
     });
-    this.productService.getSousCategories().subscribe({
+    this.clientService.getSousCategories().subscribe({
       next: (res) => {
         this.allSousCategories.set(res);
         this.isLoading.set(false);
 
         res.forEach((sc) => {
-          this.productService.getProducts({ subcategory: sc.id }).subscribe({
+          this.clientService.getComposants({ subcategory: sc.id }).subscribe({
             next: (pRes) => {
               const names = pRes.data.map((p) => p.name);
-              this.productMap.update((map) => ({ ...map, [sc.id]: names }));
+              this.composantMap.update((map) => ({ ...map, [sc.id]: names }));
               this.allSousCategories.update((list) =>
-                list.map((s) => (s.id === sc.id ? { ...s, productCount: names.length } : s)),
+                list.map((s) => (s.id === sc.id ? { ...s, composantCount: names.length } : s)),
               );
             },
           });
@@ -86,10 +86,10 @@ export class SousCategoriesComponent implements OnInit {
     this.currentPage.set(1);
   }
 
-  readonly productMap = signal<Record<number, string[]>>({});
+  readonly composantMap = signal<Record<number, string[]>>({});
 
-  getSProducts(sousCategoryId: number): string[] {
-    return this.productMap()[sousCategoryId] ?? [];
+  getSComposants(sousCategoryId: number): string[] {
+    return this.composantMap()[sousCategoryId] ?? [];
   }
 
   goToPage(page: number): void {

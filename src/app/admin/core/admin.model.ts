@@ -1,4 +1,15 @@
-import { Category } from '../../core/models/product.model';
+import { Category } from '../../core/models/client.model';
+
+export type ComposantType =
+  | 'boitier'
+  | 'processeur'
+  | 'carte-mere'
+  | 'ram'
+  | 'stockage'
+  | 'gpu'
+  | 'alimentation'
+  | 'refroidissement'
+  | 'other';
 
 export const STATUS_MAP = {
   waiting: 'En attente',
@@ -15,16 +26,14 @@ export function toLabel(status: StatusCode): string {
 }
 
 export interface DashboardStats {
-  totalSales: number;
-  totalOrders: number;
-  totalUsers: number;
-  totalStock: number;
-  salesTrend: number;
-  ordersTrend: number;
-  usersTrend: number;
+  commandes: AdminCart[];
+  totalCommandes: number;
+  users: number;
+  composants: number;
 }
 export interface ChartPoint {
   day: string;
+  count: number;
   value: number;
   height: string;
 }
@@ -45,7 +54,7 @@ export interface AdminCart {
 }
 export interface AdminCartItem {
   id: number;
-  productName: string;
+  composantName: string;
   quantity: number;
   unitPrice: number;
 }
@@ -55,7 +64,7 @@ export interface AdminCategory {
   slug: string;
   description: string;
   image: string;
-  productCount: number;
+  composantCount: number;
   subcategory: AdminSubCategory[];
 }
 export interface AdminSubCategoryPayload {
@@ -80,7 +89,7 @@ export interface AdminSubCategory {
   new?: boolean;
   imageUpdated?: boolean;
 }
-export interface AdminComponent {
+export interface AdminComposant {
   id: string;
   name: string;
   slug: string;
@@ -91,11 +100,11 @@ export interface AdminComponent {
   specs: Record<string, any>;
   tags?: Record<string, string[]>;
   stock: number;
-  badge: string;
+  type: ComposantType;
   description: string;
   createdAt: string;
 }
-export interface AdminComponentPayload {
+export interface AdminComposantPayload {
   id: string;
   name: string;
   slug: string;

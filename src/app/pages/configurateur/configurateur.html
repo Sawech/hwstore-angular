@@ -1,0 +1,443 @@
+<!-- ============================================================
+     HWstore PC Configurateur Page
+     Layout: step sidebar | composant grid | build summary
+     Powered by BuilderStateService (signals + compatibility engine)
+     ============================================================ -->
+
+<div class="pt-24 pb-12 px-8 max-w-screen-2xl mx-auto">
+  <!-- Page header -->
+  <header class="mb-12 flex items-start justify-between">
+    <div>
+      <h1 class="text-[3.5rem] font-black tracking-tighter leading-none mb-4 text-slate-900">
+        Configurez votre PC.
+      </h1>
+      <p class="text-lg text-secondary max-w-2xl leading-relaxed">
+        Architecturez votre puissance. Choisissez des composants de précision pour une performance
+        absolue.
+      </p>
+    </div>
+    @if (state.filledSlots().length > 0) {
+      <button
+        (click)="reset()"
+        class="mt-4 px-4 py-2 rounded-lg bg-red-50 text-red-500 border border-red-200 hover:bg-red-100 transition text-sm font-semibold flex-shrink-0"
+      >
+        Recommencer
+      </button>
+    }
+  </header>
+
+  <div class="flex flex-col lg:flex-row gap-12">
+    <!-- ── LEFT: Step Navigation ─────────────────────────── -->
+    <aside class="lg:w-1/4">
+      <div class="sticky top-28 space-y-2">
+        <h3 class="label-md uppercase tracking-widest text-slate-400 font-bold text-xs mb-6 px-4">
+          ÉTAPES DE CONFIGURATION
+        </h3>
+        <nav class="space-y-1">
+          @for (slot of slots; track slot) {
+            <button
+              (click)="open(slot, $event)"
+              class="w-full flex items-center justify-between p-4 rounded-lg transition-all text-left"
+              [class]="
+                isActiveSlot(slot)
+                  ? 'bg-surface-container-low text-primary border-l-4 border-primary'
+                  : 'hover:bg-surface-container-low text-slate-600 border-l-4 border-transparent'
+              "
+            >
+              <span class="font-bold flex items-center gap-3">
+                <span class="w-8 h-8 flex items-center justify-center shrink-0">
+                  <ng-container *ngComponentOutlet="icons[slot]" />
+                </span>
+
+                {{ labels[slot] }}
+              </span>
+              @if (isSlotFilled(slot)) {
+                <span
+                  class="material-symbols-outlined text-green-500"
+                  style="font-variation-settings: 'FILL' 1"
+                >
+                  check_circle
+                </span>
+              } @else {
+                <span class="text-xs font-mono opacity-50">
+                  {{ slots.indexOf(slot) + 1 }}
+                </span>
+              }
+            </button>
+          }
+        </nav>
+
+        <!-- Compatibility status (sidebar bottom) -->
+        @if (state.compatibilityResult(); as result) {
+          <div
+            class="mt-6 p-4 rounded-xl border"
+            [class.border-green-200]="result.isCompatible && result.issues.length === 0"
+            [class.border-amber-200]="result.isCompatible && result.issues.length > 0"
+            [class.border-red-200]="!result.isCompatible"
+            [class.bg-green-50]="result.isCompatible && result.issues.length === 0"
+            [class.bg-amber-50]="result.isCompatible && result.issues.length > 0"
+            [class.bg-red-50]="!result.isCompatible"
+          >
+            <div class="flex items-center gap-3 mb-2">
+              <div class="relative w-12 h-12 flex-shrink-0">
+                <svg viewBox="0 0 36 36" class="w-12 h-12 -rotate-90">
+                  <circle cx="18" cy="18" r="15" fill="none" stroke="#e2e8f0" stroke-width="3" />
+                  <circle
+                    cx="18"
+                    cy="18"
+                    r="15"
+                    fill="none"
+                    [attr.stroke]="scoreColor(result.score)"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    [attr.stroke-dasharray]="(result.score * 94.2) / 100 + ' 94.2'"
+                    class="transition-all duration-700"
+                  />
+                </svg>
+                <span
+                  class="absolute inset-0 flex items-center justify-center text-xs font-black"
+                  [style.color]="scoreColor(result.score)"
+                >
+                  {{ result.score }}%
+                </span>
+              </div>
+              <div>
+                <p
+                  class="text-xs font-bold"
+                  [class.text-green-700]="result.isCompatible && result.issues.length === 0"
+                  [class.text-amber-700]="result.isCompatible && result.issues.length > 0"
+                  [class.text-red-700]="!result.isCompatible"
+                >
+                  {{
+                    result.isCompatible
+                      ? result.issues.length > 0
+                        ? 'Compatible ⚠'
+                        : 'Compatible ✓'
+                      : 'Incompatible ✗'
+                  }}
+                </p>
+                <p class="text-xs text-slate-500">{{ result.issues.length }} problème(s)</p>
+              </div>
+            </div>
+            @for (issue of result.issues; track issue.rule) {
+              <p
+                class="text-xs mt-1 leading-snug"
+                [class.text-red-600]="issue.severity === 'error'"
+                [class.text-amber-600]="issue.severity === 'warning'"
+              >
+                {{ issue.severity === 'error' ? '🚫' : '⚠️' }} {{ issue.message }}
+              </p>
+            }
+          </div>
+        }
+      </div>
+    </aside>
+
+    <!-- ── CENTER: composant Selection ──────────────────── -->
+    <div class="lg:w-1/2">
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="text-2xl font-bold tracking-tight text-slate-900">
+          @if (active()) {
+            Sélectionnez votre {{ labels[active()!] }}
+          } @else {
+            Cliquez sur un composant pour commencer
+          }
+        </h2>
+        @if (state.isLoading()) {
+          <div
+            class="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"
+          ></div>
+        }
+        @if (state.recommendations(); as recs) {
+          <span class="text-xs text-slate-400">
+            {{ recs.compatibleCount }}/{{ recs.totalCandidates }} compatibles
+          </span>
+        }
+      </div>
+
+      <!-- composant grid -->
+      @if (active()) {
+        @if (state.isLoading()) {
+          <!-- Skeleton -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            @for (n of [1, 2, 3, 4]; track n) {
+              <div class="rounded-xl bg-slate-100 animate-pulse h-72"></div>
+            }
+          </div>
+        } @else if (state.recommendations(); as recs) {
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            @for (scored of recs.results; track scored.composant.id) {
+              <div
+                class="group bg-white rounded-xl overflow-hidden transition-all duration-300 cursor-pointer"
+                [class]="
+                  build()[active()!]?.id === scored.composant.id
+                    ? 'shadow-[0px_20px_40px_rgba(15,23,42,0.12)] border-2 border-primary'
+                    : scored.isCompatible
+                      ? 'shadow-[0px_20px_40px_rgba(15,23,42,0.06)] border border-outline-variant/10 hover:border-primary/30'
+                      : 'shadow-sm border border-red-100 opacity-60'
+                "
+                (click)="scored.isCompatible && pick(scored)"
+              >
+                <!-- composant image -->
+                <div class="aspect-square bg-surface-container-low p-8 relative overflow-hidden">
+                  <img
+                    [src]="scored.composant.images[0]"
+                    [alt]="scored.composant.name"
+                    class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  <!-- Selected badge -->
+                  @if (build()[active()!]?.id === scored.composant.id) {
+                    <div
+                      class="absolute top-4 left-4 bg-primary text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest"
+                    >
+                      Sélectionné ✓
+                    </div>
+                  }
+                  <!-- Incompatible badge -->
+                  @if (!scored.isCompatible) {
+                    <div
+                      class="absolute top-4 left-4 bg-red-500 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest"
+                    >
+                      Incompatible
+                    </div>
+                  }
+                  <!-- Score pill -->
+                  @if ((build() | json) !== '{}') {
+                    <div
+                      class="absolute top-4 right-4 rounded-full px-2 py-0.5 text-[10px] font-black text-white"
+                      [style.background]="scoreColor(scored.overallScore)"
+                    >
+                      {{ scored.overallScore }}%
+                    </div>
+                  }
+                </div>
+
+                <!-- composant info -->
+                <div class="p-6">
+                  <div class="flex justify-between items-start mb-2 min-h-14">
+                    <h4 class="font-bold text-lg text-slate-900 leading-tight line-clamp-2">
+                      {{ scored.composant.name }}
+                    </h4>
+                    <span class="text-primary font-black ml-2 flex-shrink-0 text-sm">
+                      {{ formatPrice(scored.composant.price) }}
+                    </span>
+                  </div>
+
+                  <!-- Score bar -->
+                  @if ((build() | json) !== '{}') {
+                    <div class="mb-4">
+                      <div class="flex justify-between text-xs text-slate-400 mb-1">
+                        <span>Score compatibilité</span>
+                        <span [style.color]="scoreColor(scored.overallScore)"
+                          >{{ scored.overallScore }}%</span
+                        >
+                      </div>
+                      <div class="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                        <div
+                          class="h-full rounded-full transition-all duration-500"
+                          [style.width.%]="scored.overallScore"
+                          [style.background]="scoreColor(scored.overallScore)"
+                        ></div>
+                      </div>
+                    </div>
+                  }
+
+                  <!-- Incompatibility reason -->
+                  @if (!scored.isCompatible && scored.incompatibilityReasons[0]) {
+                    <p class="text-xs text-red-500 mb-3 leading-snug">
+                      🚫 {{ scored.incompatibilityReasons[0] }}
+                    </p>
+                  }
+
+                  <button
+                    (click)="$event.stopPropagation(); scored.isCompatible && pick(scored)"
+                    class="w-full font-bold py-3 rounded-lg transition-all active:scale-[0.98]"
+                    [class]="
+                      build()[active()!]?.id === scored.composant.id
+                        ? 'bg-green-500 text-white'
+                        : scored.isCompatible
+                          ? 'bg-primary text-white hover:bg-primary-container'
+                          : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                    "
+                    [disabled]="!scored.isCompatible"
+                  >
+                    {{
+                      build()[active()!]?.id === scored.composant.id
+                        ? '✓ Sélectionné'
+                        : scored.isCompatible
+                          ? 'Ajouter au build'
+                          : 'Incompatible'
+                    }}
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      } @else {
+        <!-- Empty state -->
+        <div
+          class="flex flex-col items-center justify-center h-64 text-center text-slate-400 border-2 border-dashed border-slate-200 rounded-xl"
+        >
+          <span class="text-5xl mb-4">🖥️</span>
+          <p class="font-semibold text-slate-500">Sélectionnez une étape à gauche</p>
+          <p class="text-sm mt-1">Les composants compatibles s'afficheront ici</p>
+        </div>
+      }
+    </div>
+
+    <!-- ── RIGHT: Build Summary ──────────────────────────── -->
+    <aside class="lg:w-1/4">
+      <div class="sticky top-28 space-y-6">
+        <!-- Build summary card (dark) -->
+        <div class="bg-slate-900 text-white rounded-xl p-8 shadow-xl">
+          <div class="flex justify-between items-center mb-8">
+            <h3 class="text-xl font-black tracking-tight">Votre Build</h3>
+            @if (state.compatibilityResult(); as result) {
+              @if ((build() | json) !== '{}') {
+                <div
+                  class="text-[10px] font-black px-2 py-1 rounded-full flex items-center gap-1"
+                  [class.bg-green-500/20]="result.isCompatible"
+                  [class.text-green-400]="result.isCompatible"
+                  [class.bg-red-500/20]="!result.isCompatible"
+                  [class.text-red-400]="!result.isCompatible"
+                >
+                  <span
+                    class="w-1.5 h-1.5 rounded-full"
+                    [class.bg-green-500]="result.isCompatible"
+                    [class.bg-red-500]="!result.isCompatible"
+                  ></span>
+                  COMPATIBILITÉ {{ result.score }}%
+                </div>
+              } @else {
+                <div
+                  class="bg-slate-700/50 text-slate-400 text-[10px] font-black px-2 py-1 rounded-full"
+                >
+                  EN ATTENTE
+                </div>
+              }
+            } @else {
+              <div
+                class="bg-slate-700/50 text-slate-400 text-[10px] font-black px-2 py-1 rounded-full"
+              >
+                EN ATTENTE
+              </div>
+            }
+          </div>
+
+          <!-- composant list -->
+          <div class="space-y-4 mb-8">
+            @for (slot of slots; track slot) {
+              <div class="flex justify-between items-center" [class.opacity-40]="!build()[slot]">
+                <div class="flex items-center gap-3">
+                  <span class="w-8 h-8 flex items-center justify-center shrink-0">
+                    <ng-container *ngComponentOutlet="icons[slot]" />
+                  </span>
+                  <div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-tighter">
+                      {{ labels[slot] }}
+                    </p>
+                    <p class="text-sm font-medium line-clamp-1">
+                      {{ build()[slot] ? build()[slot]!.name : 'Non sélectionné' }}
+                    </p>
+                  </div>
+                </div>
+                @if (build()[slot]) {
+                  <div class="flex items-center gap-1 flex-shrink-0 ml-2">
+                    <span class="text-xs font-bold text-slate-300">
+                      {{ formatPrice(build()[slot]!.price) }}
+                    </span>
+                    <button
+                      (click)="remove(slot, $event)"
+                      class="text-slate-500 hover:text-red-400 transition ml-1 text-xs leading-none"
+                      title="Retirer"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+
+          <!-- Power estimate bar -->
+          <div class="border-t border-white/10 pt-6 space-y-3 mb-8">
+            <div class="flex justify-between text-xs">
+              <span class="text-slate-400">Consommation Estimée</span>
+              <span class="font-mono text-primary font-bold">
+                ~{{ state.estimatedWattage() }}W
+              </span>
+            </div>
+            <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+              <div
+                class="h-full rounded-full transition-all duration-500"
+                [class.bg-green-500]="state.estimatedWattage() < 500"
+                [class.bg-amber-500]="
+                  state.estimatedWattage() >= 500 && state.estimatedWattage() < 800
+                "
+                [class.bg-red-500]="state.estimatedWattage() >= 800"
+                [style.width]="
+                  (state.estimatedWattage() > 1200 ? 100 : state.estimatedWattage() / 12) + '%'
+                "
+              ></div>
+            </div>
+          </div>
+
+          <!-- Total + CTAs -->
+          <div class="pt-6 border-t border-white/10">
+            <div class="flex justify-between items-end mb-6">
+              <span class="text-slate-400 text-sm uppercase tracking-widest">TOTAL ESTIMÉ</span>
+              <span class="text-3xl font-black tracking-tighter">
+                {{ formatPrice(state.totalPrice()) }}
+              </span>
+            </div>
+            <div class="space-y-3">
+              <button
+                (click)="addBuildToCart()"
+                [disabled]="state.totalPrice() === 0"
+                class="w-full bg-primary text-white font-bold py-4 rounded-lg flex items-center justify-center gap-2 hover:bg-primary-container transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <span class="material-symbols-outlined">shopping_cart</span>
+                Ajouter au panier
+              </button>
+
+              @if ((build() | json) !== '{}') {
+                <a
+                  class="w-full bg-emerald-800 text-white font-bold py-4 rounded-lg flex items-center justify-center gap-2 hover:bg-emerald-700 transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+                  href="https://api.whatsapp.com/send/?phone=213553115692&text&type=phone_number&app_absent=0"
+                >
+                  <span class="material-symbols-outlined">payment_arrow_down</span>
+                  Demander une remise
+                </a>
+              }
+              <button
+                (click)="reset()"
+                class="w-full bg-slate-800 text-white font-bold py-3 rounded-lg text-sm hover:bg-slate-700 transition-all"
+              >
+                Recommencer la config
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Expert help card -->
+        <div
+          class="p-6 bg-surface-container-low rounded-xl border-2 border-dashed border-outline-variant/30 text-center"
+        >
+          <span class="material-symbols-outlined text-slate-400 text-3xl mb-2">support_agent</span>
+          <p class="text-sm font-bold text-slate-600 mb-1">Besoin d'aide ?</p>
+          <p class="text-xs text-slate-500 mb-4">
+            Nos experts hardware sont là pour vous conseiller sur votre architecture.
+          </p>
+          <a
+            href="https://api.whatsapp.com/send/?phone=213553115692&text&type=phone_number&app_absent=0"
+            class="text-primary text-xs font-bold hover:underline"
+          >
+            Démarrer un chat →
+          </a>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

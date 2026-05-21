@@ -2,7 +2,7 @@
   <!-- ─── Sidebar ─────────────────────────────────── -->
   <aside
     class="fixed left-0 top-0 h-full bg-white flex flex-col py-8 z-50 transition-all duration-300"
-    [class]="sidebarOpen() ? 'w-56' : 'w-0 overflow-hidden md:w-18'"
+    [class]="sidebarOpen() ? 'w-56' : 'w-0 overflow-hidden md:w-20'"
     style="border-right: none; box-shadow: 4px 0 24px rgba(15, 23, 42, 0.05)"
   >
     <!-- Logo -->
@@ -17,14 +17,15 @@
             Admin Portal
           </p>
         </div>
-      }
 
-      <button
-        (click)="sidebarOpen.set(!sidebarOpen())"
-        class="ml-auto rounded-lg text-secondary hover:text-primary hover:bg-surface-container-low transition-colors"
-      >
-        <span class="material-symbols-outlined">{{ sidebarOpen() ? 'menu_open' : 'menu' }}</span>
-      </button>
+        <!-- Button only renders here when sidebar IS open -->
+        <button
+          (click)="sidebarOpen.set(false)"
+          class="ml-auto rounded-lg text-secondary hover:text-primary hover:bg-surface-container-low transition-colors"
+        >
+          <span class="material-symbols-outlined">menu_open</span>
+        </button>
+      }
     </div>
 
     <!-- Nav Links -->
@@ -78,9 +79,17 @@
     class="flex-1 flex flex-col overflow-hidden transition-all duration-300"
     [style.margin-left]="sidebarOpen() ? '256px' : '64px'"
   >
-    <!-- Top Bar -->
+    <header class="flex items-center px-4 py-3">
+      @if (!sidebarOpen()) {
+        <button
+          (click)="sidebarOpen.set(true)"
+          class="fixed top-3 left-10 z-50 rounded-lg text-secondary hover:text-primary hover:bg-surface-container-low transition-colors"
+        >
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+      }
+    </header>
 
-    <!-- Page content -->
     <main class="flex-1 overflow-y-auto admin-scrollbar bg-surface">
       <router-outlet />
     </main>

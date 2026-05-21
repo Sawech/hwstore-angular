@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Composants } from './composants';
 
 describe('Composants', () => {
-  let component: Composants;
+  let composant: Composants;
   let fixture: ComponentFixture<Composants>;
 
   beforeEach(async () => {
@@ -12,11 +12,11 @@ describe('Composants', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(Composants);
-    component = fixture.componentInstance;
+    composant = fixture.componentInstance;
     await fixture.whenStable();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(composant).toBeTruthy();
   });
 });

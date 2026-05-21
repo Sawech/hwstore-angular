@@ -14,33 +14,50 @@ import { ToastService } from '../../core/toast.service';
           [ngClass]="{
             'bg-white border-l-4 border-tertiary text-on-surface': toast.type === 'success',
             'bg-white border-l-4 border-error text-on-surface': toast.type === 'error',
-            'bg-white border-l-4 border-secondary text-on-surface': toast.type === 'info'
-          }">
-          <span class="material-symbols-outlined text-xl"
+            'bg-white border-l-4 border-secondary text-on-surface': toast.type === 'info',
+          }"
+        >
+          <span
+            class="material-symbols-outlined text-xl"
             [ngClass]="{
               'text-tertiary': toast.type === 'success',
               'text-error': toast.type === 'error',
-              'text-secondary': toast.type === 'info'
-            }">
-            {{ toast.type === 'success' ? 'check_circle' : toast.type === 'error' ? 'error' : 'info' }}
+              'text-secondary': toast.type === 'info',
+            }"
+          >
+            {{
+              toast.type === 'success' ? 'check_circle' : toast.type === 'error' ? 'error' : 'info'
+            }}
           </span>
           <span class="flex-1">{{ toast.message }}</span>
-          <button class="text-secondary hover:text-on-surface transition-colors ml-2"
-            (click)="toastService.dismiss(toast.id)">
+          <button
+            class="text-secondary hover:text-on-surface transition-colors ml-2"
+            (click)="toastService.dismiss(toast.id)"
+          >
             <span class="material-symbols-outlined text-base">close</span>
           </button>
         </div>
       }
     </div>
   `,
-  styles: [`
-    @keyframes fade-in-up {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .animate-fade-in-up { animation: fade-in-up 0.25s ease-out; }
-  `]
+  styles: [
+    `
+      @keyframes fade-in-up {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-fade-in-up {
+        animation: fade-in-up 0.25s ease-out;
+      }
+    `,
+  ],
 })
-export class ToastComponent {
+export class ToastComposant {
   toastService = inject(ToastService);
 }

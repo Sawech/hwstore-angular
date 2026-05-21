@@ -2,8 +2,8 @@ import { Component, computed, inject } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
-import { HeaderComponent } from './shared/header/header.component';
-import { FooterComponent } from './shared/footer/footer.component';
+import { HeaderComponent } from './shared/header/header';
+import { FooterComponent } from './shared/footer/footer';
 
 @Component({
   selector: 'app-root',

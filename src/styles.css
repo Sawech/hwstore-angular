@@ -5,7 +5,6 @@
 /* Force Tailwind v4 to generate classes used in dynamic [ngClass] bindings */
 @source inline("px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border-2 transition-all cursor-pointer bg-primary text-white border-primary bg-white text-secondary border-outline-variant hover:border-primary hover:text-primary");
 
-
 @theme {
   --color-primary: #a82b55;
   --color-primary-container: #c8446d;
@@ -206,5 +205,47 @@
   }
   .badge-processing {
     @apply bg-secondary-container text-on-secondary-container;
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  .marquee-track {
+    animation: marquee 18s linear infinite;
+  }
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
+
+  .range-thumb {
+    pointer-events: none;
+    height: 0;
+  }
+  .range-thumb::-webkit-slider-thumb {
+    pointer-events: all;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid var(--primary, #6366f1);
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  }
+  .range-thumb::-moz-range-thumb {
+    pointer-events: all;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid var(--primary, #6366f1);
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
   }
 }

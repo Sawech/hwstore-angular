@@ -4,7 +4,12 @@ import { ReactiveFormsModule, FormBuilder, Validators, FormArray } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminApiService } from '../../core/admin-api.service';
 import { ToastService } from '../../core/toast.service';
-import { AdminCategory, AdminComponent, AdminSubCategory } from '../../core/admin.model';
+import {
+  AdminCategory,
+  AdminComposant,
+  AdminSubCategory,
+  ComposantType,
+} from '../../core/admin.model';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -21,10 +26,21 @@ export class AdminNouveauComposantComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
 
   allCategories = signal<AdminCategory[]>([]);
-  currentComponent = signal<AdminComponent | null>(null);
+  currentComposant = signal<AdminComposant | null>(null);
   currentSubcategories = signal<AdminSubCategory[]>([]);
   availableTags = signal<Record<string, string[]>>({});
   selectedTags = signal<Record<string, string[]>>({});
+  types = signal<ComposantType[]>([
+    'boitier',
+    'processeur',
+    'carte-mere',
+    'ram',
+    'stockage',
+    'gpu',
+    'alimentation',
+    'refroidissement',
+    'other',
+  ]);
   mainImageFile = signal<File | null>(null);
   galleryFiles = signal<(File | null)[]>([null, null, null]);
   mainImagePreview = signal<string | null>(null);
@@ -38,6 +54,7 @@ export class AdminNouveauComposantComponent implements OnInit {
     description: [''],
     price: [0, [Validators.required, Validators.min(0)]],
     stock: [0],
+    type: [''],
     category: [''],
     subcategory_id: ['', Validators.required],
     specs: this.fb.array([]),
@@ -55,9 +72,9 @@ export class AdminNouveauComposantComponent implements OnInit {
         const id = this.route.snapshot.paramMap.get('id');
         if (!id) return;
 
-        this.api.getComponentById(id).subscribe({
+        this.api.getComposantById(id).subscribe({
           next: (res) => {
-            this.currentComponent.set(res);
+            this.currentComposant.set(res);
 
             const parentCategory = cats.data.find((c) =>
               c.subcategory.find((sc) => sc.id === res.subcategory.id),
@@ -88,6 +105,7 @@ export class AdminNouveauComposantComponent implements OnInit {
               description: res.description,
               price: res.price,
               stock: res.stock,
+              type: res.type,
               category: parentCategory?.slug ?? '',
               subcategory_id: String(res.subcategory?.id ?? ''),
             });
@@ -214,18 +232,19 @@ export class AdminNouveauComposantComponent implements OnInit {
       slug,
       tags: this.selectedTags(),
       specs,
+      type: v.type,
     };
 
     const save$ = (images: string[]) => {
       const data = { ...payload, images };
-      const obs = this.currentComponent()
-        ? this.api.updateComponent(this.route.snapshot.paramMap.get('id')!, data)
-        : this.api.createComponent(data);
+      const obs = this.currentComposant()
+        ? this.api.updateComposant(this.route.snapshot.paramMap.get('id')!, data)
+        : this.api.createComposant(data);
 
       obs.subscribe({
         next: () => {
           this.toast.success(
-            this.currentComponent() ? 'Composant mis à jour !' : 'Composant créé !',
+            this.currentComposant() ? 'Composant mis à jour !' : 'Composant créé !',
           );
           this.router.navigate(['/admin/composants']);
         },
