@@ -18,7 +18,7 @@ import {
   ComposantsResponse,
   SubCategory,
 } from '../models/client.model';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment.prod';
 
 @Injectable({ providedIn: 'root' })
 export class ClientService {

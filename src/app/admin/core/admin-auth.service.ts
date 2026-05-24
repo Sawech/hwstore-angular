@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { AppConfig } from '../../core/config/app-config';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment.prod';
 
 export interface AdminUser {
   id: string;
