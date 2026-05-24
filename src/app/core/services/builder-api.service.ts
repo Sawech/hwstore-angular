@@ -8,12 +8,12 @@ import { Observable } from 'rxjs';
 import { RecommendationResponse, CompatibilityResult } from '../models/recommendation.model';
 import { BuildState } from '../models/build-state.model';
 import { Composant, ComposantType } from '../models/recommendation.model';
-import { environment } from '../../../environments/environment.prod';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class BuilderApiService {
   private readonly http = inject(HttpClient);
-  private readonly base = `${environment.apiUrl}/api/builder`;
+  private readonly base = `${environment.apiUrl}/builder`;
 
   /** POST /builder/recommendations */
   getRecommendations(

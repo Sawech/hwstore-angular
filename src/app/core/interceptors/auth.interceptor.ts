@@ -2,7 +2,7 @@ import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AdminAuthService } from '../../admin/core/admin-auth.service';
 import { AppConfig } from '../config/app-config';
-import { environment } from '../../../environments/environment.prod';
+import { environment } from '../../../environments/environment';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const adminAuthService = inject(AdminAuthService);
