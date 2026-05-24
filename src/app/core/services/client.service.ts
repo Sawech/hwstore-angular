@@ -18,12 +18,13 @@ import {
   ComposantsResponse,
   SubCategory,
 } from '../models/client.model';
+import { environment } from '../../../environments/environment.prod';
 
 @Injectable({ providedIn: 'root' })
 export class ClientService {
   private http = inject(HttpClient);
   private authService = inject(AuthService);
-  private apiUrl = AppConfig.apiUrl;
+  private apiUrl = environment.apiUrl;
 
   getComposants(params?: GetComposantsParams): Observable<ComposantsResponse> {
     let httpParams = new HttpParams();

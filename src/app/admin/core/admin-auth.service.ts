@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { AppConfig } from '../../core/config/app-config';
+import { environment } from '../../../environments/environment.prod';
 
 export interface AdminUser {
   id: string;
@@ -20,12 +21,15 @@ export interface LoginResponse {
 export class AdminAuthService {
   private readonly TOKEN_KEY = 'hw_admin_token';
   private readonly USER_KEY = 'hw_admin_user';
-  private readonly apiUrl = AppConfig.apiUrl;
+  private readonly apiUrl = environment.apiUrl;
 
   currentUser = signal<AdminUser | null>(this.loadUser());
   isAuthenticated = signal<boolean>(this.hasValidToken());
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+  ) {}
 
   login(email: string, password: string): Observable<LoginResponse> {
     return this.http

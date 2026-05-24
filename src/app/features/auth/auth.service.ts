@@ -3,13 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, switchMap, tap } from 'rxjs';
 import { AppConfig } from '../../core/config/app-config';
+import { environment } from '../../../environments/environment.prod';
 import { AuthResponse, User } from './models/auth.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly TOKEN_KEY = 'hwstore_token';
   private readonly USER_KEY = 'hwstore_user';
-  private readonly apiUrl = AppConfig.apiUrl;
+  private readonly apiUrl = environment.apiUrl;
 
   currentUser = signal<User | null>(this.loadUser());
   isAuthenticated = signal<boolean>(this.hasValidToken());

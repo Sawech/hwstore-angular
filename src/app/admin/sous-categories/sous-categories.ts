@@ -2,6 +2,7 @@ import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToastService } from '../core/toast.service';
 import { AppConfig } from '../../core/config/app-config';
+import { environment } from '../../../environments/environment.prod';
 import { AdminApiService } from '../core/admin-api.service';
 import { AdminSubCategory } from '../core/admin.model';
 
@@ -34,7 +35,7 @@ interface SousCategoryPayload {
 export class AdminSousCategoriesComponent implements OnInit {
   private api = inject(AdminApiService);
   private toast = inject(ToastService);
-  private base = `${AppConfig.apiUrl}/admin`;
+  private base = `${environment.apiUrl}/admin`;
 
   sousCategories = signal<AdminSubCategory[]>([]);
   loading = signal(true);

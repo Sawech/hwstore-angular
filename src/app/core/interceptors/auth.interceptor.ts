@@ -2,6 +2,7 @@ import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AdminAuthService } from '../../admin/core/admin-auth.service';
 import { AppConfig } from '../config/app-config';
+import { environment } from '../../../environments/environment.prod';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const adminAuthService = inject(AdminAuthService);
@@ -16,7 +17,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req.clone({ headers }));
   }
 
-  if (req.url.startsWith(AppConfig.apiUrl)) {
+  if (req.url.startsWith(environment.apiUrl)) {
     const token = localStorage.getItem('hwstore_token');
     if (token) {
       headers = headers.set('Authorization', `Bearer ${token}`);
