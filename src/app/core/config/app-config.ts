@@ -1,6 +1,6 @@
 export const AppConfig = {
-  apiUrl: 'http://localhost:3000/api',
-  // apiUrl: 'https://semiplastic-strident-joi.ngrok-free.dev/api',
+  // apiUrl: 'http://localhost:3000/api',
+  apiUrl: 'https://hwstore-nest.onrender.com/api',
 
   /** App metadata */
   appName: 'HWstore',
