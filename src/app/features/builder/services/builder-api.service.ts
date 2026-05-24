@@ -11,7 +11,7 @@ import {
 } from '../../../core/models/recommendation.model';
 import { BuildState } from '../../../core/models/build-state.model';
 import { Composant, ComposantType } from '../../../core/models/recommendation.model';
-import { environment } from '../../../../environments/environment.prod';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class BuilderApiService {
