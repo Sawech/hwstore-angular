@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 import { RecommendationResponse, CompatibilityResult } from '../models/recommendation.model';
 import { BuildState } from '../models/build-state.model';
 import { Composant, ComposantType } from '../models/recommendation.model';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment.prod';
 
 @Injectable({ providedIn: 'root' })
 export class BuilderApiService {
