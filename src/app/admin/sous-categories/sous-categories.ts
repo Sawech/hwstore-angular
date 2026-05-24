@@ -2,7 +2,7 @@ import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToastService } from '../core/toast.service';
 import { AppConfig } from '../../core/config/app-config';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment.prod';
 import { AdminApiService } from '../core/admin-api.service';
 import { AdminSubCategory } from '../core/admin.model';
 
