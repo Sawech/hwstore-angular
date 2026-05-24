@@ -1,6 +1,8 @@
 <div class="fixed inset-0 -z-10 bg-surface"></div>
 
-<main class="min-h-screen flex items-center justify-center p-4 sm:p-8 lg:p-12 relative overflow-hidden">
+<main
+  class="min-h-screen flex items-center justify-center p-4 sm:p-8 lg:p-12 relative overflow-hidden"
+>
   <!-- Background decorations -->
   <div class="fixed bottom-0 right-0 p-12 opacity-[0.035] pointer-events-none hidden lg:block">
     <span class="material-symbols-outlined" style="font-size: 14rem">developer_board</span>
@@ -10,19 +12,30 @@
   </div>
 
   <!-- Card -->
-  <div class="relative z-10 w-full max-w-[960px] flex flex-col lg:flex-row bg-surface-container-lowest rounded-xl shadow-[0_20px_40px_rgba(15,23,42,0.06)] overflow-hidden">
-
+  <div
+    class="relative z-10 w-full max-w-[960px] flex flex-col lg:flex-row bg-surface-container-lowest rounded-xl shadow-[0_20px_40px_rgba(15,23,42,0.06)] overflow-hidden"
+  >
     <!-- Left: Brand panel -->
-    <div class="hidden lg:flex lg:w-5/12 bg-surface-container-low flex-col justify-between p-12 border-r border-outline-variant/10">
+    <div
+      class="hidden lg:flex lg:w-5/12 bg-surface-container-low flex-col justify-between p-12 border-r border-outline-variant/10"
+    >
       <div>
         <div class="inline-flex items-center gap-3 mb-10">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center">
-            <span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings: 'FILL' 1">memory</span>
+          <div
+            class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center"
+          >
+            <span
+              class="material-symbols-outlined text-white text-2xl"
+              style="font-variation-settings: 'FILL' 1"
+              >memory</span
+            >
           </div>
           <span class="text-2xl font-extrabold tracking-tighter text-primary">HWstore</span>
         </div>
-        <h2 class="font-display font-black text-4xl tracking-tighter text-on-surface mb-4 leading-tight">
-          Rejoignez<br/><span class="text-primary">HWStore</span>
+        <h2
+          class="font-display font-black text-4xl tracking-tighter text-on-surface mb-4 leading-tight"
+        >
+          Rejoignez<br /><span class="text-primary">HWStore</span>
         </h2>
         <p class="font-body text-secondary text-base leading-relaxed max-w-sm">
           Créez votre compte pour accéder à nos offres exclusives et gérer vos commandes.
@@ -30,33 +43,44 @@
 
         <!-- Benefits -->
         <div class="space-y-4 mt-10">
-          @for (item of [
-            { icon: 'history', label: 'Suivi de vos commandes en temps réel' },
-            { icon: 'favorite', label: 'Listes de souhaits et comparaisons' },
-            { icon: 'local_offer', label: 'Offres et promotions exclusives' }
-          ]; track item.icon) {
+          @for (
+            item of [
+              { icon: 'history', label: 'Suivi de vos commandes en temps réel' },
+              { icon: 'favorite', label: 'Listes de souhaits et comparaisons' },
+              { icon: 'local_offer', label: 'Offres et promotions exclusives' },
+            ];
+            track item.icon
+          ) {
             <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1">{{ item.icon }}</span>
+              <div
+                class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0"
+              >
+                <span
+                  class="material-symbols-outlined text-primary text-[18px]"
+                  style="font-variation-settings: 'FILL' 1"
+                  >{{ item.icon }}</span
+                >
               </div>
               <span class="text-sm text-secondary">{{ item.label }}</span>
             </div>
           }
         </div>
       </div>
-      <p class="font-label text-[10px] uppercase tracking-[0.1em] font-bold text-outline">
-        © 2026 HWstore · Précision Architecturale
-      </p>
     </div>
 
     <!-- Right: Form panel -->
     <div class="w-full lg:w-7/12 p-8 sm:p-12 lg:p-16 flex flex-col justify-center">
-
       <!-- Mobile logo -->
       <div class="lg:hidden mb-8 flex justify-center">
         <div class="inline-flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center">
-            <span class="material-symbols-outlined text-white text-xl" style="font-variation-settings: 'FILL' 1">memory</span>
+          <div
+            class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center"
+          >
+            <span
+              class="material-symbols-outlined text-white text-xl"
+              style="font-variation-settings: 'FILL' 1"
+              >memory</span
+            >
           </div>
           <span class="text-xl font-extrabold tracking-tighter text-primary">HWstore</span>
         </div>
@@ -64,18 +88,24 @@
 
       <!-- Heading -->
       <div class="mb-8 text-center lg:text-left">
-        <h1 class="font-headline text-3xl font-bold tracking-tight text-on-surface mb-2">Créer un compte</h1>
-        <p class="font-body text-secondary text-sm">Rejoignez la communauté HWstore en quelques secondes.</p>
+        <h1 class="font-headline text-3xl font-bold tracking-tight text-on-surface mb-2">
+          Créer un compte
+        </h1>
+        <p class="font-body text-secondary text-sm">
+          Rejoignez la communauté HWstore en quelques secondes.
+        </p>
       </div>
 
       <!-- Form -->
       <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-5">
-
         <!-- First name + Last name row -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <!-- Prénom -->
           <div class="space-y-2">
-            <label class="block font-label text-xs uppercase tracking-widest text-secondary font-bold" for="reg-firstName">
+            <label
+              class="block font-label text-xs uppercase tracking-widest text-secondary font-bold"
+              for="reg-firstName"
+            >
               Prénom
             </label>
             <div class="relative">
@@ -101,7 +131,10 @@
 
           <!-- Nom -->
           <div class="space-y-2">
-            <label class="block font-label text-xs uppercase tracking-widest text-secondary font-bold" for="reg-lastName">
+            <label
+              class="block font-label text-xs uppercase tracking-widest text-secondary font-bold"
+              for="reg-lastName"
+            >
               Nom
             </label>
             <div class="relative">
@@ -128,7 +161,10 @@
 
         <!-- Email -->
         <div class="space-y-2">
-          <label class="block font-label text-xs uppercase tracking-widest text-secondary font-bold" for="reg-email">
+          <label
+            class="block font-label text-xs uppercase tracking-widest text-secondary font-bold"
+            for="reg-email"
+          >
             Adresse E-mail
           </label>
           <div class="relative">
@@ -154,7 +190,10 @@
 
         <!-- Password -->
         <div class="space-y-2">
-          <label class="block font-label text-xs uppercase tracking-widest text-secondary font-bold" for="reg-password">
+          <label
+            class="block font-label text-xs uppercase tracking-widest text-secondary font-bold"
+            for="reg-password"
+          >
             Mot de passe
           </label>
           <div class="relative">
@@ -169,9 +208,14 @@
               class="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-lg py-3.5 pl-12 pr-12 text-on-surface text-sm font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all placeholder:text-secondary/40 shadow-sm"
               [class.border-error]="fieldInvalid('password')"
             />
-            <button type="button" (click)="showPassword.set(!showPassword())"
-              class="absolute inset-y-0 right-0 pr-4 flex items-center text-secondary hover:text-primary transition-colors">
-              <span class="material-symbols-outlined text-[20px]">{{ showPassword() ? 'visibility_off' : 'visibility' }}</span>
+            <button
+              type="button"
+              (click)="showPassword.set(!showPassword())"
+              class="absolute inset-y-0 right-0 pr-4 flex items-center text-secondary hover:text-primary transition-colors"
+            >
+              <span class="material-symbols-outlined text-[20px]">{{
+                showPassword() ? 'visibility_off' : 'visibility'
+              }}</span>
             </button>
           </div>
           @if (fieldInvalid('password')) {
@@ -184,12 +228,17 @@
 
         <!-- Confirm password -->
         <div class="space-y-2">
-          <label class="block font-label text-xs uppercase tracking-widest text-secondary font-bold" for="reg-confirm">
+          <label
+            class="block font-label text-xs uppercase tracking-widest text-secondary font-bold"
+            for="reg-confirm"
+          >
             Confirmer le mot de passe
           </label>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <span class="material-symbols-outlined text-secondary/70 text-[20px]">lock_reset</span>
+              <span class="material-symbols-outlined text-secondary/70 text-[20px]"
+                >lock_reset</span
+              >
             </div>
             <input
               id="reg-confirm"
@@ -199,9 +248,14 @@
               class="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-lg py-3.5 pl-12 pr-12 text-on-surface text-sm font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all placeholder:text-secondary/40 shadow-sm"
               [class.border-error]="passwordsMismatch || fieldInvalid('confirmPassword')"
             />
-            <button type="button" (click)="showConfirm.set(!showConfirm())"
-              class="absolute inset-y-0 right-0 pr-4 flex items-center text-secondary hover:text-primary transition-colors">
-              <span class="material-symbols-outlined text-[20px]">{{ showConfirm() ? 'visibility_off' : 'visibility' }}</span>
+            <button
+              type="button"
+              (click)="showConfirm.set(!showConfirm())"
+              class="absolute inset-y-0 right-0 pr-4 flex items-center text-secondary hover:text-primary transition-colors"
+            >
+              <span class="material-symbols-outlined text-[20px]">{{
+                showConfirm() ? 'visibility_off' : 'visibility'
+              }}</span>
             </button>
           </div>
           @if (passwordsMismatch) {
@@ -214,7 +268,9 @@
 
         <!-- API Error -->
         @if (errorMessage()) {
-          <div class="flex items-center gap-2 px-4 py-3 bg-error-container text-on-error-container rounded-lg text-sm">
+          <div
+            class="flex items-center gap-2 px-4 py-3 bg-error-container text-on-error-container rounded-lg text-sm"
+          >
             <span class="material-symbols-outlined text-lg">error</span>
             {{ errorMessage() }}
           </div>
@@ -240,7 +296,10 @@
       <div class="mt-8 text-center">
         <p class="font-body text-secondary text-sm">
           Vous avez déjà un compte ?
-          <a routerLink="/login" class="font-bold text-primary hover:text-primary-container hover:underline underline-offset-4 transition-all ml-1">
+          <a
+            routerLink="/login"
+            class="font-bold text-primary hover:text-primary-container hover:underline underline-offset-4 transition-all ml-1"
+          >
             Se connecter
           </a>
         </p>

@@ -27,14 +27,24 @@ export class PaymentSuccessComponent implements OnInit {
   ngOnInit(): void {
     this.cartService.clearCart();
 
-    const checkoutId = this.route.snapshot.queryParamMap.get('checkout_id');
+    // const checkoutId = this.route.snapshot.queryParamMap.get('checkout_id');
 
-    if (!checkoutId) {
-      this.loading.set(false);
-      return;
-    }
+    // if (!checkoutId) {
+    //   this.loading.set(false);
+    //   return;
+    // }
 
-    this.fetchOrderRef(checkoutId, 0);
+    // this.fetchOrderRef(checkoutId, 0);
+    const cartId = +this.route.snapshot.paramMap.get('cartId')!;
+    this.api.getCart(cartId).subscribe({
+      next: (res) => {
+        this.cart.set(res);
+        this.loading.set(false);
+      },
+    });
+  }
+  formatItemPrice(price: number): string {
+    return new Intl.NumberFormat('fr-DZ').format(price) + ' DA';
   }
 
   private fetchOrderRef(checkoutId: string, attempt: number): void {

@@ -67,31 +67,31 @@ export class ClientService {
     return new Intl.NumberFormat('fr-DZ').format(price) + ' DA';
   }
 
-  sendPayment(items: ComposantPayload[]): void {
+  sendPayment(items: ComposantPayload[]): Observable<CartResponse> {
     const user = this.authService.getUser();
 
     const amount = items.reduce((total, item) => total + item.composant.price * item.quantity, 0);
 
     const payload = {
-      amount,
+      totalPrice: amount,
       items: items.map((i) => ({
         composantId: i.composant.id,
-        composantName: i.composant.name,
         quantity: i.quantity,
         unitPrice: i.composant.price,
       })),
       userId: user?.id ?? null,
     };
+    return this.http.post<CartResponse>(`${this.apiUrl}/cart`, payload);
 
-    this.http.post<any>(`${AppConfig.apiUrl}/cart/checkout`, payload).subscribe({
-      next: (data) => {
-        console.log('checkout response:', data);
-        if (data.checkout_url) {
-          window.location.href = data.checkout_url;
-        }
-      },
-      error: (err) => console.error('Erreur lors du checkout:', err),
-    });
+    // this.http.post<any>(`${AppConfig.apiUrl}/cart/checkout`, payload).subscribe({
+    //   next: (data) => {
+    //     console.log('checkout response:', data);
+    //     if (data.checkout_url) {
+    //       window.location.href = data.checkout_url;
+    //     }
+    //   },
+    //   error: (err) => console.error('Erreur lors du checkout:', err),
+    // });
   }
 
   getCartByCheckout(checkoutId: string): Observable<CartResponse> {
@@ -105,8 +105,17 @@ export class ClientService {
   }
 
   getCarts(page = 1, limit = 8): Observable<{ data: CartOrder[]; meta: CartMeta }> {
+    const user = this.authService.getUser();
+    let httpParams = new HttpParams();
+    httpParams = httpParams.set('userId', user?.id ?? '');
+    httpParams = httpParams.set('page', page);
+    httpParams = httpParams.set('limit', limit);
     return this.http.get<{ data: CartOrder[]; meta: CartMeta }>(`${this.apiUrl}/cart/orders`, {
-      params: { page, limit },
+      params: httpParams,
     });
+  }
+
+  getCart(id: number): Observable<CartResponse> {
+    return this.http.get<CartResponse>(`${this.apiUrl}/cart/${id}`);
   }
 }

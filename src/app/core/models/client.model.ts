@@ -31,14 +31,15 @@ export interface CartResponse {
   id: number;
   items: CartResponseItem[];
   status: StatusCode;
-  createdAt: string;
-  sessionToken: string;
+  // sessionToken: string;
   orderRef: string;
+  totalPrice: number;
+  createdAt: string;
 }
 
 export interface CartResponseItem {
   id: number;
-  composantName: string;
+  composant: Composant;
   quantity: number;
   unitPrice: number;
 }
@@ -62,7 +63,7 @@ export interface CartOrder {
   orderRef: string;
   status: StatusCode;
   createdAt: string;
-  sessionToken: string;
+  // sessionToken: string;
   items: CartOrderItem[];
 }
 

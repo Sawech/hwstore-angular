@@ -24,7 +24,9 @@ export class PanierComponent {
   readonly grandTotal = computed(() => this.subtotal() + this.shipping + this.tax);
 
   Pay() {
-    this.api.sendPayment(this.items());
+    this.api
+      .sendPayment(this.items())
+      .subscribe({ next: (res) => this.router.navigate(['success', res.id]) });
   }
 
   increment(composantId: number): void {

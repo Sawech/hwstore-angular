@@ -8,7 +8,7 @@
 >
   <!-- ── Main Content ────────────────────────────────────────── -->
   <main
-    class="flex-grow flex flex-col items-center justify-center px-6 py-24 w-full max-w-7xl mx-auto relative z-0"
+    class="grow flex flex-col items-center justify-center px-6 pt-24 w-full max-w-7xl mx-auto relative z-0"
   >
     <div class="w-full max-w-3xl flex flex-col items-center">
       <!-- ─ Success Hero ─ -->
@@ -27,7 +27,7 @@
           class="font-display text-5xl md:text-6xl font-black tracking-tight mb-6 leading-tight"
           style="color: var(--md-sys-color-on-background)"
         >
-          Paiement Réussi
+          Ordre Enregistré
         </h1>
 
         <p class="text-xl leading-relaxed max-w-xl" style="color: var(--md-sys-color-secondary)">
@@ -51,57 +51,103 @@
         ></div>
 
         <!-- Order Meta Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <!-- Order Number -->
-          <div class="flex flex-col gap-2">
-            <span
-              class="text-[10px] uppercase tracking-[0.1em] font-bold"
-              style="color: var(--md-sys-color-secondary)"
-              >Numéro de Commande</span
-            >
-            <span class="text-lg font-bold" style="color: var(--md-sys-color-on-background)">
-              @if (loading()) {
-                <span
-                  class="inline-block w-32 h-5 rounded animate-pulse"
-                  style="background-color: var(--md-sys-color-surface-container-high)"
-                ></span>
-              } @else {
-                #{{ cart()?.orderRef }}
-              }
-            </span>
+        <!-- Order meta -->
+        <div class="grid grid-cols-3 gap-8 pb-8 border-b border-outline-variant/10">
+          <div>
+            <p class="text-[10px] uppercase tracking-[0.1em] font-bold text-secondary mb-1">
+              Commande
+            </p>
+            <p class="text-base font-bold text-on-background">#{{ cart()?.orderRef }}</p>
           </div>
-
-          <!-- Delivery Date -->
-          <div class="flex flex-col gap-2 md:items-center">
-            <span
-              class="text-[10px] uppercase tracking-[0.1em] font-bold"
-              style="color: var(--md-sys-color-secondary)"
-              >Montant Total</span
-            >
-            <span class="text-lg font-bold" style="color: var(--md-sys-color-on-background)">{{
-              cart() ? formatPrice(cart()!) : '-'
-            }}</span>
+          <div class="text-center">
+            <p class="text-[10px] uppercase tracking-[0.1em] font-bold text-secondary mb-1">
+              Articles
+            </p>
+            <p class="text-base font-bold text-on-background">
+              {{ cart()?.items?.length }} articles
+            </p>
           </div>
-
-          <!-- Status -->
-          <div class="flex flex-col gap-2 md:items-end">
-            <span
-              class="text-[10px] px-3 uppercase tracking-[0.1em] font-bold"
-              style="color: var(--md-sys-color-secondary)"
-              >Statut</span
-            >
+          <div class="text-right">
+            <p class="text-[10px] uppercase tracking-[0.1em] font-bold text-secondary mb-1">
+              Statut
+            </p>
             @if (cart()) {
               <span
-                class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
+                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
                 [ngClass]="getStatusClass(toLabel(cart()!.status))"
               >
                 <span
-                  class="w-1.5 h-1.5 rounded-full mr-2"
+                  class="w-1.5 h-1.5 rounded-full"
                   [ngClass]="getStatusDot(toLabel(cart()!.status))"
                 ></span>
                 {{ toLabel(cart()!.status) }}
               </span>
             }
+          </div>
+        </div>
+
+        <!-- Items list -->
+        <div class="flex flex-col divide-y divide-outline-variant/10">
+          <!-- Header row -->
+          <div class="grid grid-cols-[1fr_auto_auto] gap-4 pb-3">
+            <span class="text-[10px] uppercase tracking-[0.1em] font-bold text-secondary"
+              >Article</span
+            >
+            <span class="text-[10px] uppercase tracking-[0.1em] font-bold text-secondary text-right"
+              >Qté</span
+            >
+            <span
+              class="text-[10px] uppercase tracking-[0.1em] font-bold text-secondary text-right w-24"
+              >Prix unit.</span
+            >
+          </div>
+
+          @for (item of cart()?.items; track item.id) {
+            <div class="grid grid-cols-[1fr_auto_auto] gap-4 items-center py-4">
+              <!-- Product info -->
+              <div class="flex items-center gap-4 min-w-0">
+                @if (item.composant.images[0]) {
+                  <img
+                    [src]="item.composant.images[0]"
+                    [alt]="item.composant.name"
+                    class="w-14 h-14 rounded-xl object-cover border border-outline-variant/20 flex-shrink-0"
+                  />
+                } @else {
+                  <div
+                    class="w-14 h-14 rounded-xl bg-surface-container flex items-center justify-center flex-shrink-0"
+                  >
+                    <span class="material-symbols-outlined text-secondary text-2xl">memory</span>
+                  </div>
+                }
+                <div class="min-w-0">
+                  <p class="font-semibold text-sm text-on-background truncate">
+                    {{ item.composant.name }}
+                  </p>
+                  <p class="text-xs text-secondary mt-0.5">{{ item.composant.brand }}</p>
+                </div>
+              </div>
+
+              <!-- Quantity -->
+              <span class="text-sm text-secondary text-right">× {{ item.quantity }}</span>
+
+              <!-- Unit price -->
+              <span class="text-sm font-semibold text-on-background text-right w-24">
+                {{ formatItemPrice(+item.unitPrice) }}
+              </span>
+            </div>
+          }
+        </div>
+
+        <!-- Total row -->
+        <div class="flex justify-between items-center pt-6 border-t border-outline-variant/10 mt-2">
+          <p class="text-sm text-secondary">{{ cart()?.items?.length }} articles</p>
+          <div class="text-right">
+            <p class="text-[10px] uppercase tracking-[0.1em] font-bold text-secondary mb-1">
+              Total
+            </p>
+            <p class="text-2xl font-black text-on-background">
+              {{ cart() ? formatPrice(cart()!) : '-' }}
+            </p>
           </div>
         </div>
       </div>

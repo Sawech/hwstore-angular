@@ -13,7 +13,6 @@ import {
 } from '../../core/models/build-state.model';
 import { ScoredComposant } from '../../core/models/recommendation.model';
 import { CartService } from '../../core/services/cart.service';
-import { Composant } from '../../core/models/client.model';
 import { BuilderStateService } from '../../core/services/builder-state.service';
 
 @Component({
@@ -30,6 +29,10 @@ export class ConfigurateurComponent {
   readonly slots = BUILD_SLOT_ORDER;
   readonly build = this.state.build;
   readonly active = this.state.activeSlot;
+
+  constructor() {
+    this.state.openSlotPicker('motherboard');
+  }
 
   // Slot picker actions
   open(slot: BuildSlot, event: Event): void {

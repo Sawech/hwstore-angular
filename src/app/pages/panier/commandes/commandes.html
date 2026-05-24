@@ -121,20 +121,20 @@
               </p>
 
               <!-- Item lines -->
-              <div class="mt-1 flex flex-col gap-1.5">
-                @for (item of cart.items; track item.id) {
-                  <div class="flex items-center gap-2 text-xs text-on-surface-variant">
-                    <span class="material-symbols-outlined" style="font-size: 14px"
-                      >chevron_right</span
-                    >
-                    <span class="font-medium">{{ item.composant.name }}</span>
-                    <span class="text-outline">× {{ item.quantity }}</span>
-                    <span class="ml-auto font-bold text-on-background">
-                      {{ formatPrice(item.unitPrice * item.quantity) }}
-                    </span>
-                  </div>
-                }
-              </div>
+              <!-- <div class="mt-1 flex flex-col gap-1.5">
+                  @for (item of cart.items; track item.id) {
+                    <div class="flex items-center gap-2 text-xs text-on-surface-variant">
+                      <span class="material-symbols-outlined" style="font-size: 14px"
+                        >chevron_right</span
+                      >
+                      <span class="font-medium">{{ item.composant.name }}</span>
+                      <span class="text-outline">× {{ item.quantity }}</span>
+                      <span class="ml-auto font-bold text-on-background">
+                        {{ formatPrice(item.unitPrice * item.quantity) }}
+                      </span>
+                    </div>
+                  }
+                </div> -->
             </div>
 
             <!-- Right: total + actions -->
@@ -150,13 +150,21 @@
                   {{ formatPrice(getTotal(cart)) }}
                 </p>
               </div>
-              <div class="flex gap-3">
+              <!-- <div class="flex gap-3">
                 <button
                   class="flex items-center justify-center w-12 h-12 rounded-lg bg-surface-container-low text-secondary hover:text-primary hover:bg-surface-variant transition-colors group-hover:scale-105 duration-300"
                   title="Reçu"
                   (click)="showBill(cart.sessionToken)"
                 >
                   <span class="material-symbols-outlined">receipt_long</span>
+                </button>
+              </div> -->
+              <div class="flex gap-3">
+                <button
+                  [routerLink]="['/success', cart.id]"
+                  class="px-6 py-3 rounded-lg bg-gradient-to-br from-primary to-primary-container text-white font-bold text-sm tracking-wide hover:opacity-90 transition-opacity shadow-[0_8px_16px_rgba(168,43,85,0.2)]"
+                >
+                  Voir Détails
                 </button>
               </div>
             </div>

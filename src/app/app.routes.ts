@@ -49,15 +49,17 @@ export const routes: Routes = [
   {
     path: 'panier',
     loadComponent: () => import('./pages/panier/panier').then((m) => m.PanierComponent),
+    canActivate: [authGuard],
     title: 'Mon Panier | HWstore',
   },
 
   {
-    path: 'success',
+    path: 'success/:cartId',
     loadComponent: () =>
       import('./pages/panier/payment-success/payment-success').then(
         (m) => m.PaymentSuccessComponent,
       ),
+    canActivate: [authGuard],
     title: 'Paiement Réussi | HWstore',
   },
 

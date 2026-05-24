@@ -10,13 +10,13 @@ import { FooterComponent } from './shared/footer/footer';
   standalone: true,
   imports: [RouterOutlet, HeaderComponent, FooterComponent],
   template: `
-    @if (!isAdminRoute() && !isClientLoginRoute()) {
+    @if (!isAdminRoute() && !isClientLoginRoute() && !isClientRegistreRoute()) {
       <app-header />
     }
     <main>
       <router-outlet />
     </main>
-    @if (!isAdminRoute() && !isClientLoginRoute()) {
+    @if (!isAdminRoute() && !isClientLoginRoute() && !isClientRegistreRoute()) {
       <app-footer />
     }
   `,
@@ -36,4 +36,5 @@ export class App {
 
   isAdminRoute = computed(() => this.url().startsWith('/admin'));
   isClientLoginRoute = computed(() => this.url().startsWith('/login'));
+  isClientRegistreRoute = computed(() => this.url().startsWith('/register'));
 }
